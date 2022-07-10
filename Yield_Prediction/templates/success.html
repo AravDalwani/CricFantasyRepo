@@ -1,0 +1,239 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+   <!-- Required meta tags -->
+   <meta charset="utf-8">
+   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+   <title>Cane Yield + </title>
+   <link rel="icon" href="static/img/favicon.png">
+   <!-- Bootstrap CSS -->
+   <link rel="stylesheet" href="static/styles/bootstrap.min.css">
+   <!-- animate CSS -->
+   <link rel="stylesheet" href="static/styles/animate.css">
+   <!-- owl carousel CSS -->
+   <link rel="stylesheet" href="static/styles/owl.carousel.min.css">
+   <!-- themify CSS -->
+   <link rel="stylesheet" href="static/styles/themify-icons.css">
+   <!-- flaticon CSS -->
+   <link rel="stylesheet" href="static/styles/flaticon.css">
+   <!-- magnific-popup CSS -->
+   <link rel="stylesheet" href="static/styles/magnific-popup.css">
+   <!-- font awesome CSS -->
+   <link rel="stylesheet" href="static/fontawesome/css/all.min.css">
+   <!-- style CSS -->
+   <link rel="stylesheet" href="static/styles/style.css">
+</head>
+
+<body>
+   <header class="main_menu home_menu">
+      <div class="container">
+         <div class="row">
+            <div class="col-lg-12">
+               <nav class="navbar navbar-expand-lg navbar-light">
+                  <a class="navbar-brand" href={{url_for('index')}}> <img src="static/img/logo.png" alt="logo"> </a>
+                  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+                     aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                     <span class="navbar-toggler-icon"></span>
+                  </button>
+                  <div class="collapse navbar-collapse main-menu-item" id="navbarNav">
+                     <ul class="navbar-nav">
+                        <li class="nav-item active">
+                           <a class="nav-link" href={{url_for('index')}}>Home</a>
+                        </li>
+                        <li class="nav-item">
+                           <a class="nav-link" href={{url_for('analysis')}}>Analysis</a>
+                        </li>
+                        <li class="nav-item">
+                           <a class="nav-link" href={{url_for('prediction')}}>Prediction</a>
+                        </li>
+                        <li class="nav-item">
+                           <a class="nav-link" href={{url_for('contact')}}>Contact Us</a>
+                        </li>
+                     </ul>
+                  </div>
+               </nav>
+            </div>
+         </div>
+      </div>
+   </header>
+   <!--::menu part end::-->
+   <section class="breadcrumb blog_bg">
+      <div class="container">
+          <div class="row">
+              <div class="col-lg-12">
+                  <div class="breadcrumb_iner">
+                      <div class="breadcrumb_iner_item">
+                          <h2> Prediction </h2>
+                      </div>
+                  </div>
+              </div>
+          </div>
+      </div>
+  </section>
+   <br>
+   <br>
+   <br>  
+    <h2>{{prediction}} kg/ha</h2>
+
+    <div class="whole-wrap">
+		<div class="container box_1170">
+         <div class="section-top-border">
+            <h3 class="mb-30">Effect of Fertiliser on Yield</h3>
+            <div class="progress-table-wrap">
+               <div class="progress-table">
+                  <div class="table-head">
+                     <div class="serial">#</div>
+                     <div class="country">Nutrient</div>
+                     <div class="visit">Change in Nutrient</div>
+                     <div class="percentage">Increase/Decrease in Yield</div>
+                     <div class="change">% Change in Yield</div>
+                  </div>
+                  <div class="table-row">
+                     <div class="serial">01</div>
+                     <div class="country">Nitrogen</div>
+                     <div class="visit">+ 0.25ppm</div>
+                     <div class="percentage">{{check2}}</div>
+                     <div class="change">{{change2}}</div>
+                  </div>
+                  <div class="table-row">
+                     <div class="serial">02</div>
+                     <div class="country">Nitrogen</div>
+                     <div class="visit">+ 0.50ppm</div>
+                     <div class="percentage">{{check3}}</div>
+                     <div class="change">{{change3}}</div>
+                  </div>
+                  <div class="table-row">
+                     <div class="serial">03</div>
+                     <div class="country">Pottasium</div>
+                     <div class="visit">+ 25ppm</div>
+                     <div class="percentage">{{check4}}</div>
+                     <div class="change">{{check4}}</div>
+                  </div>
+                  <div class="table-row">
+                     <div class="serial">04</div>
+                     <div class="country">Pottasium</div>
+                     <div class="visit">+ 50ppm</div>
+                     <div class="percentage">{{check5}}</div>
+                     <div class="change">{{change5}}</div>
+                  </div>
+                  <div class="table-row">
+                     <div class="serial">05</div>
+                     <div class="country">Phosphorous</div>
+                     <div class="visit">+ 2ppm</div>
+                     <div class="percentage">{{check6}}</div>
+                     <div class="change">{{change6}}</div>
+                  </div>
+                  <div class="table-row">
+                     <div class="serial">06</div>
+                     <div class="country">Phosphorous</div>
+                     <div class="visit">+ 4ppm</div>
+                     <div class="percentage">{{check7}}</div>
+                     <div class="change">{{change7}}</div>
+                  </div>
+               </div>
+            </div>
+         </div>
+      </div>
+   </div>
+
+   <!--::footer_part start::-->
+   <footer class="footer_part">
+      <div class="container">
+         <div class="row">
+            <div class="col-lg-12">
+               <div class="footer_logo">
+                  <h3 style="color:#BAB86C;font-size:25px;"> Cane Yield + </h3>
+               </div>
+            </div>
+
+            <div class="col-sm-6 col-lg-3">
+               <div class="single_footer_part">
+                  <h4>About Us</h4>
+                  <p>Based in India, we provide high-accuracy prediction of sugarcane yield </p>
+                  <div class="footer_icon social_icon">
+                     <ul class="list-unstyled">
+                        <li><a href="https://www.instagram.com/vardhanshorewala/" class="single_social_icon"><i class="fab fa-linkedin-in"></i></a></li>
+                        <li><a href="https://www.linkedin.com/in/vardhan-shorewala-b85543172/" class="single_social_icon"><i class="fab fa-instagram"></i></a></li>
+                        <li><a href="https://github.com/vardhanshorewala" class="single_social_icon"><i class="fab fa-github"></i></a></li>
+                     </ul>
+                  </div>
+               </div>
+            </div>
+            <div class="col-sm-6 col-lg-3">
+               <div class="single_footer_part">
+                  <h4>Contact Info</h4>
+                  <p>Address : Mumbai, India</p>
+                  <p>Phone : +91 9930335159</p>
+                  <p>Email : vardhanshorewala@gmail.com</p>
+               </div>
+            </div>
+            <div class="col-sm-6 col-lg-3">
+               <div class="single_footer_part">
+                  <h4>Navigation</h4>
+                  <ul class="list-unstyled">
+                     <li><a href={{url_for('index')}}>Home</a></li>
+                     <li><a href={{url_for('analysis')}}>Data-Analysis</a></li>
+                     <li><a href={{url_for('prediction')}}>Model</a></li>
+                     <li><a href={{url_for('contact')}}>Contact Us</a></li>
+                  </ul>
+               </div>
+            </div>
+            <div class="col-sm-6 col-lg-3">
+               <div class="single_footer_part">
+                  <h4>Our Qualifications</h4>
+                  <ul class="list-unstyled">
+                     <li><a>Novel Method</a></li>
+                     <li><a>High Accuracy</a></li>
+                     <li><a>Authentic Dataset</a></li>
+                     <li><a>High Perfromance</a></li>
+                     <li><a>Optimised Model</a></li>
+                  </ul>
+               </div>
+            </div>
+         </div>
+         <hr>
+         <div class="row">
+            <div class="col-lg-12">
+               <div class="copyright_text text-center">
+                  <P>
+Copyright &copy;<script>document.write(new Date().getFullYear());</script> All rights reserved | </i> <a target="_blank"> Vardhan Shorewala</a> </P>
+               </div>
+            </div>
+         </div>
+      </div>
+   </footer>
+
+
+   <!--::footer_part end::-->
+
+   <!-- jquery plugins here-->
+   <script src="static/scripts/jquery-1.12.1.min.js"></script>
+   <!-- popper js -->
+   <script src="static/scripts/popper.min.js"></script>
+   <!-- bootstrap js -->
+   <script src="static/scripts/bootstrap.min.js"></script>
+   <!-- magnific js -->
+   <script src="static/scripts/jquery.magnific-popup.min.js"></script>
+   <!-- carousel js -->
+   <script src="static/scripts/owl.carousel.min.js"></script>
+   <!-- easing js -->
+   <script src="static/scripts/jquery.easing.min.js"></script>
+   <!--masonry js-->
+   <script src="static/scripts/masonry.pkgd.min.js"></script>
+   <script src="static/scripts/masonry.pkgd.js"></script>
+   <!--form validation js-->
+   <script src="static/scripts/jquery.nice-select.min.js"></script>
+	<script src="static/scripts/contact.js"></script>
+	<script src="static/scripts/jquery.ajaxchimp.min.js"></script>
+	<script src="static/scripts/jquery.form.js"></script>
+	<script src="static/scripts/jquery.validate.min.js"></script>
+	<script src="static/scripts/mail-script.js"></script>
+   <!-- counter js -->
+   <script src="static/scripts/jquery.counterup.min.js"></script>
+   <script src="static/scripts/waypoints.min.js"></script>
+   <!-- custom js -->
+   <script src="static/scripts/custom.js"></script>
+</body>
+
+</html>

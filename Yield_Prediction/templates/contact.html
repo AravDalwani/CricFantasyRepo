@@ -1,0 +1,262 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+   <!-- Required meta tags -->
+   <meta charset="utf-8">
+   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+   <title>Cane Yield +</title>
+   <link rel="icon" href="static/img/favicon.png">
+   <!-- Bootstrap CSS -->
+   <link rel="stylesheet" href="static/styles/bootstrap.min.css">
+   <!-- animate CSS -->
+   <link rel="stylesheet" href="static/styles/animate.css">
+   <!-- owl carousel CSS -->
+   <link rel="stylesheet" href="static/styles/owl.carousel.min.css">
+   <!-- themify CSS -->
+   <link rel="stylesheet" href="static/styles/themify-icons.css">
+   <!-- flaticon CSS -->
+   <link rel="stylesheet" href="static/styles/flaticon.css">
+   <!-- magnific-popup CSS -->
+   <link rel="stylesheet" href="static/styles/magnific-popup.css">
+   <!-- slick CSS -->
+   <link rel="stylesheet" href="static/styles/slick.css">
+   <!-- font awesome CSS -->
+   <link rel="stylesheet" href="static/fontawesome/css/all.min.css">
+   <!-- style CSS -->
+   <link rel="stylesheet" href="static/styles/style.css">
+</head>
+
+<body>
+   <!--::menu part start::-->
+   <header class="main_menu home_menu">
+      <div class="container">
+         <div class="row">
+            <div class="col-lg-12">
+               <nav class="navbar navbar-expand-lg navbar-light">
+                  <a class="navbar-brand" href={{url_for('index')}}> <img src="static/img/logo.png" alt="logo"> </a>
+                  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+                     aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                     <span class="navbar-toggler-icon"></span>
+                  </button>
+                  <div class="collapse navbar-collapse main-menu-item" id="navbarNav">
+                     <ul class="navbar-nav">
+                        <li class="nav-item active">
+                           <a class="nav-link" href={{url_for('index')}}>Home</a>
+                        </li>
+                        <li class="nav-item">
+                           <a class="nav-link">Analysis</a>
+                        </li>
+                        <li class="nav-item">
+                           <a class="nav-link">Prediction</a>
+                        </li>
+                        <li class="nav-item">
+                           <a class="nav-link" href={{url_for('contact')}}>Contact Us</a>
+                        </li>
+                     </ul>
+                  </div>
+               </nav>
+            </div>
+         </div>
+      </div>
+   </header>
+   <!--::menu part end::-->
+
+    <!--::breadcrumb part start::-->
+   <section class="breadcrumb blog_bg">
+      <div class="container">
+          <div class="row">
+              <div class="col-lg-12">
+                  <div class="breadcrumb_iner">
+                      <div class="breadcrumb_iner_item">
+                          <h2> Contact Us </h2>
+                      </div>
+                  </div>
+              </div>
+          </div>
+      </div>
+  </section>
+  <!--::breadcrumb part start::-->
+
+  <!-- ================ contact section start ================= -->
+
+<section class="contact-section area-padding">
+   <div class="container">
+     <div class="row">
+       <div class="col-12">
+         <h2 class="contact-title">Get in Touch</h2>
+       </div>
+       <div class="col-lg-8">
+         {% block content %}
+         <form action="{{ url_for('contact') }}" method="POST" class="form-contact contact_form">
+            {{ form.csrf_token }}
+               <div class="row">
+                  <div class="col-12">
+                     <div class="form-group">
+                        {{ form.subject.label }}
+                        {{ form.subject(class='form-control') }}
+                        {% for error in form.subject.errors %}
+                        <center><span style="color: black;">{{ error }}</span></center>
+                        {% endfor %}
+                     </div>
+                  </div>
+                  <div class="col-sm-6">
+                     <div class="form-group">
+                        {{ form.name.label }}
+                        {{ form.name(class='form-control') }}
+                        {% for error in form.name.errors %}
+                        <center><span style="color: black;">{{ error }}</span></center>
+                        {% endfor %}
+                     </div>
+                  </div>
+                  <div class="col-sm-6">
+                     <div class="form-group">
+                        {{ form.email.label }}
+                        {{ form.email(class='form-control') }}
+                        {% for error in form.email.errors %}
+                        <center><span style="color: black;"><p style="font-family:Poppins">{{ error }} </p> </span></center>
+                        {% endfor %}
+                     </div>
+                  </div>
+                  <div class="col-12">
+                     <div class="form-group">
+                        {{ form.message.label }}
+                        {{ form.message(class='form-control') }}
+                        {% for error in form.message.errors %}
+                        <center><span style="color: black;">{{ error }}</span></center>
+                        {% endfor %}
+                     </div>
+                   </div>
+               </div>
+               <div class="form-group mt-3">
+                  {{ form.submit(class='button button-contactForm"') }}
+               </div>
+            </form>
+         {% endblock %}
+      </div>
+       <div class="col-lg-4">
+         <div class="media contact-info">
+           <span class="contact-info__icon"><i class="ti-home"></i></span>
+           <div class="media-body">
+             <h3><a href="">Mumbai, India.</a></h3>
+             <p>Peddar Road, MH 400 026</p>
+           </div>
+         </div>
+         <div class="media contact-info">
+           <span class="contact-info__icon"><i class="ti-tablet"></i></span>
+           <div class="media-body">
+             <h3><a href="tel:454545654">+91 9930335159</a></h3>
+             <p>Mon to Fri 9am to 6pm</p>
+           </div>
+         </div>
+         <div class="media contact-info">
+           <span class="contact-info__icon"><i class="ti-email"></i></span>
+           <div class="media-body">
+             <h3><a href="mailto:vardhanshorewala@gmail.com">vardhanshorewala@gmail.com</a></h3>
+             <p>Send us your query anytime!</p>
+           </div>
+         </div>
+       </div>
+     </div>
+   </div>
+ </section>
+  <!-- ================ contact section end ================= -->
+
+ <!--::footer_part start::-->
+ <footer class="footer_part">
+   <div class="container">
+      <div class="row">
+         <div class="col-lg-12">
+            <div class="footer_logo">
+               <h3 style="color:#BAB86C;font-size:25px;"> Cane Yield + </h3>
+            </div>
+         </div>
+
+         <div class="col-sm-6 col-lg-3">
+            <div class="single_footer_part">
+               <h4>About Us</h4>
+               <p>Based in India, we provide high-accuracy prediction of sugarcane yield </p>
+               <div class="footer_icon social_icon">
+                  <ul class="list-unstyled">
+                     <li><a href="https://www.instagram.com/vardhanshorewala/" class="single_social_icon"><i class="fab fa-linkedin-in"></i></a></li>
+                     <li><a href="https://www.linkedin.com/in/vardhan-shorewala-b85543172/" class="single_social_icon"><i class="fab fa-instagram"></i></a></li>
+                     <li><a href="https://github.com/vardhanshorewala" class="single_social_icon"><i class="fab fa-github"></i></a></li>
+                  </ul>
+               </div>
+            </div>
+         </div>
+         <div class="col-sm-6 col-lg-3">
+            <div class="single_footer_part">
+               <h4>Contact Info</h4>
+               <p>Address : Mumbai, India</p>
+               <p>Phone : +91 9930335159</p>
+               <p>Email : vardhanshorewala@gmail.com</p>
+            </div>
+         </div>
+         <div class="col-sm-6 col-lg-3">
+            <div class="single_footer_part">
+               <h4>Navigation</h4>
+               <ul class="list-unstyled">
+                  <li><a href={{url_for('index')}}>Home</a></li>
+                  <li><a href={{url_for('index')}}>Data-Analysis</a></li>
+                  <li><a href={{url_for('index')}}>Model</a></li>
+                  <li><a href={{url_for('contact')}}>Contact Us</a></li>
+               </ul>
+            </div>
+         </div>
+         <div class="col-sm-6 col-lg-3">
+            <div class="single_footer_part">
+               <h4>Our Qualifications</h4>
+               <ul class="list-unstyled">
+                  <li><a>Novel Method</a></li>
+                  <li><a>High Accuracy</a></li>
+                  <li><a>Authentic Dataset</a></li>
+                  <li><a>High Perfromance</a></li>
+                  <li><a>Optimised Model</a></li>
+               </ul>
+            </div>
+         </div>
+      </div>
+      <hr>
+      <div class="row">
+         <div class="col-lg-12">
+            <div class="copyright_text text-center">
+               <P>
+Copyright &copy;<script>document.write(new Date().getFullYear());</script> All rights reserved | </i> <a target="_blank"> Vardhan Shorewala</a> </P>
+            </div>
+         </div>
+      </div>
+   </div>
+</footer> <!--::footer_part end::-->
+ 
+ <!-- jquery -->
+ <script src="static/scripts/jquery-1.12.1.min.js"></script>
+ <!-- popper js -->
+ <script src="static/scripts/popper.min.js"></script>
+ <!-- bootstrap js -->
+ <script src="static/scripts/bootstrap.min.js"></script>
+ <!-- easing js -->
+ <script src="static/scripts/jquery.magnific-popup.min.js"></script>
+ <!-- owl carousel js -->
+ <script src="static/scripts/owl.carousel.min.js"></script>
+ <script src="static/scripts/slick.min.js"></script>
+ <!-- easing js -->
+ <script src="static/scripts/jquery.easing.min.js"></script>
+ <!--masonry js-->
+ <script src="static/scripts/masonry.pkgd.min.js"></script>
+ <script src="static/scripts/masonry.pkgd.js"></script>
+ <!--form validation js-->
+ <script src="static/scripts/jquery.nice-select.min.js"></script>
+ <script src="static/scripts/contact.js"></script>
+ <script src="static/scripts/jquery.ajaxchimp.min.js"></script>
+ <script src="static/scripts/jquery.form.js"></script>
+ <script src="static/scripts/jquery.validate.min.js"></script>
+ <script src="static/scripts/mail-script.js"></script>
+ <!-- counter js -->
+ <script src="static/scripts/jquery.counterup.min.js"></script>
+ <script src="static/scripts/waypoints.min.js"></script>
+ <!-- custom js -->
+ <script src="static/scripts/custom.js"></script>
+</body>
+
+</html>
