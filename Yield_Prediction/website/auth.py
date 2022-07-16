@@ -3,8 +3,11 @@ from . import db
 from .models import User
 from flask_login import login_user, logout_user, login_required, current_user
 from werkzeug.security import generate_password_hash, check_password_hash
+from flask_mail import Mail, Message
+from .form_contact import ContactForm, csrf, PredForm
 
 auth = Blueprint("auth", __name__)
+mail = Mail()
 
 @auth.route("/login", methods=['GET', 'POST'])
 def login():
@@ -25,6 +28,14 @@ def login():
 
     return render_template("login.html")
 
+def send_message(message):
+    print(message.get('name'))
+
+    msg = Message(message.get('subject'), sender = message.get('email'),
+            recipients = ['newpythontestapp@gmail.com'],
+            body= message.get('message')
+    )
+    mail.send(msg)
 
 @auth.route("/sign-up", methods=['GET', 'POST'])
 def sign_up():
@@ -77,5 +88,9 @@ def success():
 
 @auth.route("/contact", methods=['POST', 'GET'])
 def contact():
+    form = ContactForm()
+    if form.validate_on_submit():
+        send_message(request.form)
+        return redirect('/')
 
-    return render_template("contact.html")
+    return render_template("contact.html", form=form)
