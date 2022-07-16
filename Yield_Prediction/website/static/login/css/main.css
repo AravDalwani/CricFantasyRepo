@@ -64,6 +64,13 @@ a:hover {
   color: #a64bf4;
 }
 
+.newclass {
+  padding-top: 2000px;
+  padding-right: 30px;
+  padding-bottom: 50px;
+  padding-left: 80px;
+}
+
 /*---------------------------------------------*/
 h1,h2,h3,h4,h5,h6 {
 	margin: 0px;
@@ -160,12 +167,12 @@ iframe {
 [ login ]*/
 .limiter {
   width: 100%;
-  margin: 0 auto;
+  margin: 50 auto;
 }
 
 .container-login100 {
   width: 100%;  
-  min-height: 100vh;
+  min-height: 200vh;
   display: -webkit-box;
   display: -webkit-flex;
   display: -moz-box;
@@ -174,7 +181,7 @@ iframe {
   flex-wrap: wrap;
   justify-content: center;
   align-items: center;
-  padding: 15px;
+  padding: 40px;
   background-repeat: no-repeat;
   background-position: center;
   background-size: cover;
@@ -272,8 +279,9 @@ iframe {
 .focus-input100::before {
   content: "";
   display: block;
-  position: absolute;
+  position: fixed;
   bottom: -2px;
+  top: 100px;
   left: 0;
   width: 0;
   height: 2px;
@@ -319,7 +327,7 @@ iframe {
   display: block;
   position: relative;
   z-index: 1;
-  border-radius: 25px;
+  border-radius: 150px;
   overflow: hidden;
   margin: 0 auto;
 
@@ -332,7 +340,7 @@ iframe {
 
 .login100-form-bgbtn {
   position: absolute;
-  z-index: -1;
+  z-index: -10;
   width: 300%;
   height: 100%;
   background: #a64bf4;
@@ -340,7 +348,7 @@ iframe {
   background: -o-linear-gradient(right, #00dbde, #fc00ff, #00dbde, #fc00ff);
   background: -moz-linear-gradient(right, #00dbde, #fc00ff, #00dbde, #fc00ff);
   background: linear-gradient(right, #00dbde, #fc00ff, #00dbde, #fc00ff);
-  top: 0;
+  top: 50;
   left: -100%;
 
   -webkit-transition: all 0.4s;
