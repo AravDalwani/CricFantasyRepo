@@ -1,44 +1,248 @@
-{% extends "base.html" %} {% block title %}Sign Up{% endblock %} {% block
-content %}
-<form method="POST">
-  <h3 align="center">Sign Up</h3>
-  <div class="form-group">
-    <label for="email">Email Address</label>
-    <input
-      type="text"
-      id="email"
-      name="email"
-      class="form-control"
-      placeholder="Enter Email"
-    />
-    <label for="username">Username</label>
-    <input
-      type="text"
-      id="username"
-      name="username"
-      class="form-control"
-      placeholder="Enter Username"
-    />
-    <label for="password1">Password</label>
-    <input
-      type="password"
-      id="password1"
-      name="password1"
-      class="form-control"
-      placeholder="Enter Password"
-    />
-    <label for="password2">Password Again</label>
-    <input
-      type="password"
-      id="password2"
-      name="password2"
-      class="form-control"
-      placeholder="Enter Password Again"
-    />
-    <br />
-    <div align="center">
-      <button class="btn btn-primary" type="submit">Sign Up</button>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Login</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+<!--===============================================================================================-->  
+  <link rel="icon" type="image/png" href="static/login/images/icons/favicon.ico"/>
+<!--===============================================================================================-->
+  <link rel="stylesheet" type="text/css" href="static/login/vendor/bootstrap/css/bootstrap.min.css">
+<!--===============================================================================================-->
+  <link rel="stylesheet" type="text/css" href="static/login/fonts/font-awesome-4.7.0/css/font-awesome.min.css">
+<!--===============================================================================================-->
+  <link rel="stylesheet" type="text/css" href="static/login/fonts/iconic/css/material-design-iconic-font.min.css">
+<!--===============================================================================================-->
+  <link rel="stylesheet" type="text/css" href="static/login/vendor/animate/animate.css">
+<!--===============================================================================================-->  
+  <link rel="stylesheet" type="text/css" href="static/login/vendor/css-hamburgers/hamburgers.min.css">
+<!--===============================================================================================-->
+  <link rel="stylesheet" type="text/css" href="static/login/vendor/animsition/css/animsition.min.css">
+<!--===============================================================================================-->
+  <link rel="stylesheet" type="text/css" href="static/login/vendor/select2/select2.min.css">
+<!--===============================================================================================-->  
+  <link rel="stylesheet" type="text/css" href="static/login/vendor/daterangepicker/daterangepicker.css">
+<!--===============================================================================================-->
+  <link rel="stylesheet" type="text/css" href="static/login/css/util.css">
+  <link rel="stylesheet" type="text/css" href="static/login/css/main.css">
+<!--===============================================================================================-->
+  <link rel="icon" href="static/img/favicon.png">
+  <!-- Bootstrap CSS -->
+  <link rel="stylesheet" href="static/styles/bootstrap.min.css">
+  <!-- animate CSS -->
+  <link rel="stylesheet" href="static/styles/animate.css">
+  <!-- owl carousel CSS -->
+  <link rel="stylesheet" href="static/styles/owl.carousel.min.css">
+  <!-- themify CSS -->
+  <link rel="stylesheet" href="static/styles/themify-icons.css">
+  <!-- flaticon CSS -->
+  <link rel="stylesheet" href="static/styles/flaticon.css">
+  <!-- magnific-popup CSS -->
+  <link rel="stylesheet" href="static/styles/magnific-popup.css">
+  <!-- font awesome CSS -->
+  <link rel="stylesheet" href="static/fontawesome/css/all.min.css">
+  <!-- style CSS -->
+  <link rel="stylesheet" href="static/styles/style.css">
+</head>
+  <!--::menu part start::-->
+  <header class="main_menu home_menu">
+    <div class="container">
+       <div class="row">
+        <div class="col-lg-12">
+         <nav class="navbar navbar-expand-lg navbar-light">
+          <a class="navbar-brand" href={{url_for('auth.index')}}> <img src="static/img/logo.png" alt="logo"> </a>
+          <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+             aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+             <span class="navbar-toggler-icon"></span>
+          </button>
+          <div class="collapse navbar-collapse main-menu-item" id="navbarNav">
+             <ul class="navbar-nav">
+              <li class="nav-item active">
+               <a class="nav-link" href={{url_for('auth.index')}}>Home</a>
+              </li>
+              <li class="nav-item">
+               <a class="nav-link" href={{url_for('auth.login')}}>Ongoing Games</a>
+              </li>
+              <li class="nav-item">
+               <a class="nav-link" href={{url_for('auth.contact')}}>Contact Us</a>
+              </li>
+             </ul>
+          </div>
+         </nav>
+        </div>
+       </div>
+    </div>
+   </header>
+  <br>
+  <br>
+  <br>
+  <br>
+  <br>
+  <body>
+   <!--::menu part end::-->
+  <div class = "newclass">
+    <div class="limiter">
+      <div class="container-login100" style="background-image: url('static/login/images/bg-01.jpg');">
+        <div class="wrap-login100 p-l-55 p-r-55 p-t-65 p-b-54">
+          <form method="POST" class="login100-form validate-form">
+            <span class="login100-form-title p-b-49">
+              Sign Up
+            </span>
+
+            <div class="wrap-input100 validate-input m-b-23" data-validate = "Email is required">
+              <span class="label-input100"></span>Email ID</span>
+              <input class="input100" type="text" name="email" id ="email" placeholder="Type your email id">
+              <span class="focus-input100" data-symbol="&#xf206;"></span>
+            </div>
+
+            <div class="wrap-input100 validate-input m-b-23" data-validate = "Username is required">
+              <span class="label-input100">Username</span>
+              <input class="input100" type="text" name="username" id ="username" placeholder="Type your username">
+              <span class="focus-input100" data-symbol="&#xf206;"></span>
+            </div>
+
+            <div class="wrap-input100 validate-input" data-validate="Password is required">
+              <span class="label-input100">Password</span>
+              <input class="input100" type="password" name="password1" id ="password1" placeholder="Type your password">
+              <span class="focus-input100" data-symbol="&#xf190;"></span>
+            </div>
+            <br>
+            <div class="wrap-input100 validate-input" data-validate="Password is required">
+              <span class="label-input100">Repeat Password</span>
+              <input class="input100" type="password" name="password2" id ="password2" placeholder="Repeat the password">
+              <span class="focus-input100" data-symbol="&#xf190;"></span>
+            </div>
+            <br>
+            <div class="container-login100-form-btn">
+              <div class="wrap-login100-form-btn">
+                <div class="login100-form-bgbtn"></div>
+                <button class="login100-form-btn">
+                  Sign Up
+                </button>
+              </div>
+
+              <div class="flex-col-c p-t-155">
+                <span class="txt1 p-b-17">
+                  Already Have an Account
+                </span>
+
+                <a href={{url_for('auth.login')}} class="txt2">
+                  Login
+                </a>
+              </div>
+            </form>
+        </div>
+      </div>
     </div>
   </div>
-</form>
-{% endblock %}
+  <!--::footer_part start::-->
+  <footer class="footer_part">
+     <div class="container">
+      <div class="row">
+       <div class="col-lg-12">
+        <div class="footer_logo">
+           <h3 style="color:#052CA3;font-size:25px;"> Cane Yield + </h3>
+        </div>
+       </div>
+ 
+       <div class="col-sm-6 col-lg-3">
+        <div class="single_footer_part">
+           <h4>About Us</h4>
+           <p>Real time proposition bets, using advanced novel pseudo ML.</p>
+           <div class="footer_icon social_icon">
+            <ul class="list-unstyled">
+             <li><a href="https://www.instagram.com/vardhanshorewala/" class="single_social_icon"><i class="fab fa-linkedin-in"></i></a></li>
+             <li><a href="https://www.linkedin.com/in/vardhan-shorewala-b85543172/" class="single_social_icon"><i class="fab fa-instagram"></i></a></li>
+             <li><a href="https://github.com/vardhanshorewala" class="single_social_icon"><i class="fab fa-github"></i></a></li>
+            </ul>
+           </div>
+        </div>
+       </div>
+       <div class="col-sm-6 col-lg-3">
+        <div class="single_footer_part">
+           <h4>Contact Info</h4>
+           <p>Address : Mumbai, India</p>
+           <p>Phone : +91 9930335159</p>
+           <p>Email : vardhanshorewala@gmail.com</p>
+        </div>
+       </div>
+       <div class="col-sm-6 col-lg-3">
+        <div class="single_footer_part">
+           <h4>Navigation</h4>
+           <ul class="list-unstyled">
+           
+           </ul>
+        </div>
+       </div>
+       <div class="col-sm-6 col-lg-3">
+        <div class="single_footer_part">
+           <h4>Our Qualifications</h4>
+           <ul class="list-unstyled">
+            <li><a>Novel Method</a></li>
+            <li><a>High Accuracy</a></li>
+            <li><a>Proprietary Data</a></li>
+            <li><a>Real Time Props</a></li>
+            <li><a>Advanced Game Data</a></li>
+           </ul>
+        </div>
+       </div>
+      </div>
+      <hr>
+      <div class="row">
+       <div class="col-lg-12">
+        <div class="copyright_text text-center">
+           <P>
+ Copyright &copy;<script>document.write(new Date().getFullYear());</script> All rights reserved | </i> <a target="_blank"> Vardhan Shorewala</a> </P>
+        </div>
+       </div>
+      </div>
+     </div>
+  </footer>
+  <script src="static/scripts/jquery-1.12.1.min.js"></script>
+  <!-- popper js -->
+  <script src="static/scripts/popper.min.js"></script>
+  <!-- bootstrap js -->
+  <script src="static/scripts/bootstrap.min.js"></script>
+  <!-- magnific js -->
+  <script src="static/scripts/jquery.magnific-popup.min.js"></script>
+  <!-- carousel js -->
+  <script src="static/scripts/owl.carousel.min.js"></script>
+  <!-- easing js -->
+  <script src="static/scripts/jquery.easing.min.js"></script>
+  <!--masonry js-->
+  <script src="static/scripts/masonry.pkgd.min.js"></script>
+  <script src="static/scripts/masonry.pkgd.js"></script>
+  <!--form validation js-->
+  <script src="static/scripts/jquery.nice-select.min.js"></script>
+   <script src="static/scripts/contact.js"></script>
+   <script src="static/scripts/jquery.ajaxchimp.min.js"></script>
+   <script src="static/scripts/jquery.form.js"></script>
+   <script src="static/scripts/jquery.validate.min.js"></script>
+   <script src="static/scripts/mail-script.js"></script>
+  <!-- counter js -->
+  <script src="static/scripts/jquery.counterup.min.js"></script>
+  <script src="static/scripts/waypoints.min.js"></script>
+  <!-- custom js -->
+  <script src="static/scripts/custom.js"></script>
+
+  <div id="dropDownSelect1"></div>
+  
+<!--===============================================================================================-->
+  <script src="static/login/vendor/jquery/jquery-3.2.1.min.js"></script>
+<!--===============================================================================================-->
+  <script src="static/login/vendor/animsition/js/animsition.min.js"></script>
+<!--===============================================================================================-->
+  <script src="static/login/vendor/bootstrap/js/popper.js"></script>
+  <script src="static/login/vendor/bootstrap/js/bootstrap.min.js"></script>
+<!--===============================================================================================-->
+  <script src="static/login/vendor/select2/select2.min.js"></script>
+<!--===============================================================================================-->
+  <script src="static/login/vendor/daterangepicker/moment.min.js"></script>
+  <script src="static/login/vendor/daterangepicker/daterangepicker.js"></script>
+<!--===============================================================================================-->
+  <script src="static/login/vendor/countdowntime/countdowntime.js"></script>
+<!--===============================================================================================-->
+  <script src="static/login/js/main.js"></script>
+
+</body>
+</html>
