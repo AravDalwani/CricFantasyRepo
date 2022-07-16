@@ -24,7 +24,7 @@ def login():
                 flash("Logged in!", category='success')
                 login_user(user, remember=True)
                 print("Logged in!")
-                return redirect(url_for('views.home'))
+                return redirect(url_for('auth.success'))
             else:
                 flash('Password is incorrect.', category='error')
         else:
@@ -87,6 +87,7 @@ def index():
     return render_template("index.html")
 
 @auth.route('/success')
+@login_required
 def success():
     return render_template('success.html')
 
