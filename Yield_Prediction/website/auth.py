@@ -87,7 +87,6 @@ def index():
     return render_template("index.html")
 
 @auth.route('/success')
-@login_required
 def success():
     return render_template('success.html')
 
