@@ -2,8 +2,6 @@ from flask_wtf import FlaskForm, CSRFProtect
 from wtforms import StringField, TextAreaField, SubmitField, IntegerField, SelectField, FloatField, DecimalField
 from wtforms.validators import DataRequired, Email, NumberRange
 
-csrf = CSRFProtect()
-
 class ContactForm(FlaskForm):
     name = StringField('Name', validators=[DataRequired('Please Enter Your Name')])
     email = StringField('E-mail', validators=[DataRequired('Please Enter a Correct Email'),Email('Please Enter a Correct Email')])

@@ -5,7 +5,7 @@ from .views import views
 from flask_login import login_user, logout_user, login_required, current_user
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_mail import Mail, Message
-from .form_contact import ContactForm, csrf, PredForm
+from .form_contact import ContactForm, PredForm
 
 auth = Blueprint("auth", __name__)
 mail = Mail()

@@ -3,16 +3,32 @@ from flask_sqlalchemy import SQLAlchemy
 from os import path
 from flask_login import LoginManager
 from flask import Flask, url_for, render_template, request, redirect
+import os 
+from flask_mail import Mail, Message
+
 
 db = SQLAlchemy()
 DB_NAME = "database.db"
 
 
 def create_app():
+    mail = Mail()
     app = Flask(__name__)
+
+    SECRET_KEY = os.urandom(32)
+    app.config['SECRET_KEY'] = SECRET_KEY
+
+    app.config['MAIL_SERVER']='smtp.gmail.com'
+    app.config['MAIL_PORT'] = 465
+    app.config['MAIL_USERNAME'] = 'newpythontestapp@gmail.com'
+    app.config['MAIL_PASSWORD'] = 'yhvgoogijajxqfsi'
+    app.config['MAIL_USE_TLS'] = False
+    app.config['MAIL_USE_SSL'] = True
     app.config['SECRET_KEY'] = "helloworld"
     app.config['SQL_ALCHEMY_DATABASE_URI'] = f'sqlite:///{DB_NAME}'
+
     db.init_app(app)
+    mail.init_app(app)
 
     from .views import views
     from .auth import auth 
