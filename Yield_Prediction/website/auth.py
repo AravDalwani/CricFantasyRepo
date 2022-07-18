@@ -211,28 +211,28 @@ def success():
         team_currently_bowling = team_1_full
 
     team_batting = team_currently_batting[0][0]
-    batsmen_1 = 'None'
-    batsmen_2 = 'None'
-    batsmen_1_runs = 0
-    batsmen_2_runs = 0
-    batsmen_1_balls = 0
-    batsmen_1_sr = 0
-    batsmen_2_sr = 0
-    batsmen_2_balls = 0
-    batsmen_1_sixes = 0
-    batsmen_2_sixes = 0
-    batsmen_1_fours = 0
-    batsmen_2_fours = 0
+    global batsmen_1 
+    global batsmen_2 
+    global batsmen_1_runs
+    global batsmen_2_runs
+    global batsmen_1_balls
+    global batsmen_1_sr
+    global batsmen_2_sr
+    global batsmen_2_balls
+    global batsmen_1_sixes
+    global batsmen_2_sixes
+    global batsmen_1_fours
+    global batsmen_2_fours
 
     team_bowling = team_currently_bowling[0][0]
-    bowler_name = 'None'
-    bowler_overs = 0
-    bowler_runs = 0
-    bowler_wickets = 0
-    bowler_maidens = 0
-    bowler_econ = 0
-    bowler_no_ball = 0
-    bowler_wides = 0
+    global bowler_name
+    global bowler_overs
+    global bowler_runs
+    global bowler_wickets
+    global bowler_maidens
+    global bowler_econ
+    global bowler_no_ball
+    global bowler_wides
 
     count_batter = 0 
 
@@ -246,13 +246,15 @@ def success():
     except:
         team_batting_wickets = 0 
 
+    batsmen_1_ = False
+    batsmen_2_ = False
 
     for batter in team_currently_batting[1]:
 
         if count_batter == 2:
             break
 
-        if (batter[-1] == 'batting') and (batsmen_1 == 'None') and (count_batter == 0):
+        if (batter[-1] == 'batting') and (batsmen_1_ == False) and (count_batter == 0):
             batsmen_1 = str(batter[0])
             batsmen_1_runs = int(batter[3])
             batsmen_1_balls = int(batter[4])
@@ -260,8 +262,9 @@ def success():
             batsmen_1_fours = int(batter[6])
             batsmen_1_sixes = int(batter[7])
             count_batter += 1
+            batsmen_1_ = True
 
-        elif (batter[-1] == 'batting') and (batsmen_2 == 'None') and (count_batter == 1):
+        elif (batter[-1] == 'batting') and (batsmen_2_ == False) and (count_batter == 1):
             batsmen_2 = str(batter[0])
             batsmen_2_runs = int(batter[3])
             batsmen_2_balls = int(batter[4])
@@ -269,6 +272,7 @@ def success():
             batsmen_2_fours = int(batter[6])
             batsmen_2_sixes = int(batter[7])
             count_batter += 1
+            batsmen_1_ = True
 
     for bowler in team_currently_bowling[2]:
 
@@ -310,6 +314,10 @@ def success():
 
     special_question = 0
 
+    global match_curr_id
+
+    match_curr_id = match_details[0][0]
+
     if 40 < team_batting_runs < 45:
         question = special_questions[0]
         special_question = 1
@@ -324,15 +332,28 @@ def success():
         special_question = 4
 
     print(question)
-
-    link_current_match = "https://www.cricbuzz.com/live-cricket-scores/" + str(match_details[0][0])
+    print(match_curr_id)
 
     return render_template('success.html')
 
 @auth.route('/scorecard')
 def scorecard():
-    return render_template('scorecard.html')
+    link_current_match = "https://www.cricbuzz.com/live-cricket-scores/" + str(match_curr_id)
 
+    return render_template('scorecard.html', batsmen_1 = batsmen_1,
+    batsmen_2 = batsmen_2,
+    batsmen_1_runs = batsmen_1_runs,
+    batsmen_2_runs = batsmen_2_runs,
+    batsmen_1_balls = batsmen_1_balls,
+    batsmen_1_sr = batsmen_1_sr,
+    batsmen_2_sr = batsmen_2_sr,
+    batsmen_2_balls = batsmen_2_balls,
+    batsmen_1_sixes = batsmen_1_sixes,
+    batsmen_2_sixes = batsmen_2_sixes,
+    batsmen_1_fours = batsmen_1_fours,
+    batsmen_2_fours = batsmen_2_fours,
+    link = link_current_match)
+    
 @auth.route("/contact", methods=['POST', 'GET'])
 def contact():
     form = ContactForm()
