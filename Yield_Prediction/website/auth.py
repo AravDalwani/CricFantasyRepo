@@ -90,6 +90,10 @@ def index():
 def success():
     return render_template('success.html')
 
+@auth.route('/scorecard')
+def scorecard():
+    return render_template('scorecard.html')
+
 @auth.route("/contact", methods=['POST', 'GET'])
 def contact():
     form = ContactForm()
