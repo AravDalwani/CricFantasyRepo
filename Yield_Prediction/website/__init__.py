@@ -6,7 +6,6 @@ from flask import Flask, url_for, render_template, request, redirect
 import os 
 from flask_mail import Mail, Message
 
-
 db = SQLAlchemy()
 DB_NAME = "database.db"
 
@@ -25,7 +24,7 @@ def create_app():
     app.config['MAIL_USE_TLS'] = False
     app.config['MAIL_USE_SSL'] = True
     app.config['SECRET_KEY'] = "helloworld"
-    app.config['SQL_ALCHEMY_DATABASE_URI'] = f'sqlite:///{DB_NAME}'
+    app.config['SQLALCHEMY_DATABASE_URI'] = f'sqlite:///{DB_NAME}'
 
     db.init_app(app)
     mail.init_app(app)
@@ -37,7 +36,7 @@ def create_app():
     app.register_blueprint(views, url_prefix="/")
     app.register_blueprint(auth, url_prefix="/")
 
-    from .models import User
+    from .models import User, Match
 
     create_database(app)
 

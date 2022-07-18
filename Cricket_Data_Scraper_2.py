@@ -33,7 +33,7 @@ response = requests.request("GET", url, headers=headers)
 
 information = response.json()
 
-game_types = [1] #[0] for International Games and [1] for Domestic Games
+game_types = [0] #[0] for International Games and [1] for Domestic Games
 
 for game_type in game_types:
     data = information['typeMatches'][game_type]['seriesMatches'] 
@@ -206,10 +206,12 @@ else:
     batsmen = 'None'
 
 wicket_number = team_batting_wickets + 1
+target_runs = int(team_batting_runs) + 60
+off_balls = bowler_no_ball + bowler_wides
 
-questions_general = ['How will the strike rate of {} of {} change in the next over'.format(batsmen_1, batsmen_1_sr),'How many fours will batsman {} hit in the next over?'.format(batsmen_2), 'How many sixes will batsman {} hit in the next over?'.format(batsmen_1), 'How many wides will bowler {} bowl in his next over?'.format(bowler), 'Will {} take a wicket in the over'.format(bowler)]
+questions_general = ['How will the strike rate of {} of {} change in the next over'.format(batsmen_1, batsmen_1_sr),'How many fours will batsman {} hit in the next over?'.format(batsmen_2), 'How many sixes will batsman {} hit in the next over?'.format(batsmen_1), 'How many wides will bowler {} bowl in his next over?'.format(bowler), 'Will {} take a wicket in the over'.format(bowler), 'Currently bowled {} wides, will {} bowl another one this over?'.format(off_balls, bowler), 'Currently bowled {} maidens, will {} bowl another one this over?'.format(bowler_maidens, bowler), 'How will the economy of {} of {} change in the next over'.format(bowler, bowler_econ)]
 
-questions_general_overs = ['How many runs will team {} make in the next 5 overs?'.format(team_batting), 'How many fours will batsmen {} hit in the next 5 overs'.format(batsmen_2), 'How many wickets will {} take in the next five overs'.format(bowler_name), 'Will team {} lose its {} wicket in the next five overs'.format(team_batting, wicket_number)]
+questions_general_overs = ['How many runs will team {} make in the next 5 overs?'.format(team_batting), 'How many fours will batsmen {} hit in the next 5 overs'.format(batsmen_2), 'How many wickets will {} take in the next five overs'.format(bowler_name), 'Will team {} lose its {} wicket in the next five overs'.format(team_batting, wicket_number), 'Will team {} cross {} in the next 5 overs'.format(team_batting, target_runs)]
 
 special_questions = ['Will team {} cross 50 runs in the next over?'.format(team_batting), 'Will team {} cross 100 runs in the next over?'.format(team_batting), 'Will {} score a half centuary in the next over?'.format(batsmen), 'Will {} score a centuary in the next over?'.format(batsmen), 'How many runs will the next partnership between batsman {} and {} be?'.format(batsmen_1, batsmen_2)]
 
@@ -238,6 +240,8 @@ elif (93 < batsmen_1_runs < 96) or (93 < batsmen_2_runs < 96):
 
 print(question)
 
+
+
 prediction = input("Enter Your Desired Choice")
 
 values_stored = str(team_batting_overs)
@@ -265,15 +269,23 @@ elif (question_number == 2):
 elif (question_number == 3):
     values_stored = values_stored + str(" ") + str(bowler_wides) 
 elif (question_number == 4):
-    values_stored = values_stored + str(" ") + str(bowler_wickets) 
+    values_stored = values_stored + str(" ") + str(bowler_wickets)
 elif (question_number == 5):
-    values_stored = values_stored + str(" ") + str(team_batting_runs) 
+    values_stored = values_stored + str(" ") + str(off_balls)
 elif (question_number == 6):
-    values_stored = values_stored + str(" ") + str(batsmen_2_runs) 
+    values_stored = values_stored + str(" ") + str(bowler_maidens)
 elif (question_number == 7):
-    values_stored = values_stored + str(" ") + str(bowler_wickets) 
+    values_stored = values_stored + str(" ") + str(bowler_econ)  
 elif (question_number == 8):
+    values_stored = values_stored + str(" ") + str(team_batting_runs) 
+elif (question_number == 9):
+    values_stored = values_stored + str(" ") + str(batsmen_2_runs) 
+elif (question_number == 10):
+    values_stored = values_stored + str(" ") + str(bowler_wickets) 
+elif (question_number == 11):
     values_stored = values_stored + str(" ") + str(team_batting_wickets)
+elif (question_number == 12):
+    values_stored = values_stored + str(" ") + str(target_runs)
 
 file = open('Test.txt', 'a')
 
