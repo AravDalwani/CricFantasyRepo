@@ -365,14 +365,7 @@ def success():
                     match_status_new.append('Upcoming')
                     match_details_fire = curr_match_name['team1']['teamName'] + str(" ") + str("vs") + str(" ") + curr_match_name['team2']['teamName']
                     match_details_arr_new.append(match_details_fire)  
-
-    print(len(seriesName_upcoming_new))
-    print(len(start_times_new))
-    print(len(match_status_new))
-    print(len(match_details_arr_new))
-    print(start_times_new)
-
-
+                    
     return render_template('success.html', seriesName_upcoming_new=seriesName_upcoming_new, 
     start_times_new = start_times_new,
     match_status_new = match_status_new,
