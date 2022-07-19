@@ -9,6 +9,7 @@ from .form_contact import ContactForm, PredForm
 from http.client import responses
 import requests
 import random
+from datetime import datetime
 
 def getList(dict):
     return dict.keys()
@@ -110,6 +111,11 @@ def success():
         'X-RapidAPI-Key': "d0c522027amsh51fdd1eb86fd81fp15b046jsn5bc411c88dcc",
         'X-RapidAPI-Host': "cricbuzz-cricket.p.rapidapi.com"
         }
+    
+    seriesName_upcoming_new = []
+    start_times_new = []
+    match_status_new = []
+    match_details_arr_new = []
 
     #Link to scrape data about ongoing matches
 
@@ -120,12 +126,13 @@ def success():
     game_types = [0]
 
     for game_type in game_types:
+
         data = information['typeMatches'][game_type]['seriesMatches'] 
 
         series_list = [] #Different ongoing Series
         match_details = [] #Different ongoing Matches
 
-        for series_current in data:
+        for series_current in data[::len(data)-1]:
 
             #Some Necessary Data Formatting and Series Finding
             try:
@@ -135,20 +142,25 @@ def success():
 
             try:
                 series_list.append([curr_series_data['seriesName'], curr_series_data['seriesId']])
+                storage = curr_series_data['seriesName']
                 curr_series_data = curr_series_data['matches']
             except:
                 pass
 
             if len(curr_series_data) == 0:
                 curr_series_data['seriesAdWrapper'][0]['matchInfo']['matchInfo']
-            
+
             for matchSet in curr_series_data:
 
-                print(matchSet['matchInfo']['matchFormat'])
-
                 if (matchSet['matchInfo']['matchFormat'] == 'TEST') and (matchSet['matchInfo']['state'] != 'Complete'):
-
+                    seriesName_upcoming_new.append(storage)
+                    match_status_new.append('Live')
+                    match_details_fire = matchSet['matchInfo']['team1']['teamName'] + str(" ") + str("vs") + str(" ") + matchSet['matchInfo']['team2']['teamName']
+                    match_details_arr_new.append(match_details_fire)
                     #Getting current Match ID
+
+                    dt_object = datetime.fromtimestamp(int(matchSet['matchInfo']['startDate'])/1000)
+                    start_times_new.append(str(dt_object))
 
                     current_match = matchSet['matchInfo']['matchId']
                     match_details.append([matchSet['matchInfo']['matchId'], matchSet['matchInfo']['state']])
@@ -298,7 +310,7 @@ def success():
     target_runs = int(team_batting_runs) + 60
     off_balls = bowler_no_ball + bowler_wides
 
-    questions_general = ['How will the strike rate of {} of {} change in the next over'.format(batsmen_1, batsmen_1_sr),'How many fours will batsman {} hit in the next over?'.format(batsmen_2), 'How many sixes will batsman {} hit in the next over?'.format(batsmen_1), 'How many wides will bowler {} bowl in his next over?'.format(bowler), 'Will {} take a wicket in the over'.format(bowler), 'Currently bowled {} wides, will {} bowl another one this over?'.format(off_balls, bowler), 'Currently bowled {} maidens, will {} bowl another one this over?'.format(bowler_maidens, bowler), 'How will the economy of {} of {} change in the next over'.format(bowler, bowler_econ)]
+    questions_general = ['How will the strike rate of {} of {} change in the next over'.format(batsmen_1, batsmen_1_sr),'How many fours will batsman {} hit in the next over?'.format(batsmen_2), 'How many sixes will batsman {} hit in the next over?'.format(batsmen_1), 'How many wides will bowler {} bowl in his next over?'.format(bowler_name), 'Will {} take a wicket in the over'.format(bowler_name), 'Currently bowled {} wides, will {} bowl another one this over?'.format(off_balls, bowler_name), 'Currently bowled {} maidens, will {} bowl another one this over?'.format(bowler_maidens, bowler_name), 'How will the economy of {} of {} change in the next over'.format(bowler_name, bowler_econ)]
 
     questions_general_overs = ['How many runs will team {} make in the next 5 overs?'.format(team_batting), 'How many fours will batsmen {} hit in the next 5 overs'.format(batsmen_2), 'How many wickets will {} take in the next five overs'.format(bowler_name), 'Will team {} lose its {} wicket in the next five overs'.format(team_batting, wicket_number), 'Will team {} cross {} in the next 5 overs'.format(team_batting, target_runs)]
 
@@ -334,7 +346,39 @@ def success():
     print(question)
     print(match_curr_id)
 
-    return render_template('success.html')
+    list_types = ['international', 'league']
+
+    for match_type in list_types:
+        url_curr = "https://cricbuzz-cricket.p.rapidapi.com/schedule/v1/" + str(match_type) 
+        response = requests.request("GET", url_curr, headers=headers)
+        information = response.json()
+        series_types_new = information['matchScheduleMap'][0]['scheduleAdWrapper']['matchScheduleList']
+
+        for series in series_types_new:
+            matches_in_series = series['matchInfo']
+
+            for curr_match_name in matches_in_series:
+                if curr_match_name['matchFormat'] == 'T20':
+                    seriesName_upcoming_new.append(series['seriesName'])
+                    dt_object = datetime.fromtimestamp(int(curr_match_name['startDate'])/1000)
+                    start_times_new.append(str(dt_object))
+                    match_status_new.append('Upcoming')
+                    match_details_fire = curr_match_name['team1']['teamName'] + str(" ") + str("vs") + str(" ") + curr_match_name['team2']['teamName']
+                    match_details_arr_new.append(match_details_fire)  
+
+    print(len(seriesName_upcoming_new))
+    print(len(start_times_new))
+    print(len(match_status_new))
+    print(len(match_details_arr_new))
+    print(start_times_new)
+
+
+    return render_template('success.html', seriesName_upcoming_new=seriesName_upcoming_new, 
+    start_times_new = start_times_new,
+    match_status_new = match_status_new,
+    match_details_arr_new = match_details_arr_new,
+    len = len(match_details_arr_new)
+    )
 
 @auth.route('/scorecard')
 def scorecard():
