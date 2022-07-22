@@ -107,7 +107,7 @@ def index():
 @auth.route('/success')
 def success():
     headers = {
-        'X-RapidAPI-Key': "d0c522027amsh51fdd1eb86fd81fp15b046jsn5bc411c88dcc",
+        'X-RapidAPI-Key': "11321f9994mshb05a0bcc9d875e1p10afabjsn1541df1aeee8",
         'X-RapidAPI-Host': "cricbuzz-cricket.p.rapidapi.com"
         }
 
@@ -234,6 +234,12 @@ def success():
     global bowler_no_ball
     global bowler_wides
 
+    global questions_general
+    global questions_general_overs
+    global special_questions
+    global question_number
+    global question
+
     count_batter = 0 
 
     team_batting_stats = team_currently_batting[0][1]['inngs1']
@@ -287,30 +293,52 @@ def success():
             bowler_wides = int(bowler[9])
             break
 
-    if (43 < batsmen_1_runs < 47):
-        batsmen = batsmen_1
-    elif (43 < batsmen_2_runs < 47):
-        batsmen = batsmen_2
-    else:
-        batsmen = 'None'
+    try:
+        if (43 < batsmen_1_runs < 47):
+            batsmen = batsmen_1
+        elif (43 < batsmen_2_runs < 47):
+            batsmen = batsmen_2
+        else:
+            batsmen = 'None'
+    except:
+        pass
 
     wicket_number = team_batting_wickets + 1
     target_runs = int(team_batting_runs) + 60
     off_balls = bowler_no_ball + bowler_wides
 
+    global option1
+    global option2
+
+    options_questions_general = [
+        ['Increase', '2 or Above', '1 or Above', '2 or Above', 'Yes', 'Yes', 'Yes', 'Increase'],
+        ['Decrease', 'Under 2', 'Under 1', 'Under 2', 'No', 'No', 'No', 'Decrease']]
+
+    options_questions_general_overs = [
+        ['Over 40', '7 or Above', '2 or Above', 'Yes', 'Yes'],
+        ['Under 40', 'Under 7', 'Under 2', 'No', 'No']]
+
+    options_special_questions = [
+        ['Yes', 'Yes', 'Yes', 'Yes', 'Over 50'],
+        ['No', 'No', 'No', 'No', 'Under 50']]
+
     questions_general = ['How will the strike rate of {} of {} change in the next over'.format(batsmen_1, batsmen_1_sr),'How many fours will batsman {} hit in the next over?'.format(batsmen_2), 'How many sixes will batsman {} hit in the next over?'.format(batsmen_1), 'How many wides will bowler {} bowl in his next over?'.format(bowler), 'Will {} take a wicket in the over'.format(bowler), 'Currently bowled {} wides, will {} bowl another one this over?'.format(off_balls, bowler), 'Currently bowled {} maidens, will {} bowl another one this over?'.format(bowler_maidens, bowler), 'How will the economy of {} of {} change in the next over'.format(bowler, bowler_econ)]
 
-    questions_general_overs = ['How many runs will team {} make in the next 5 overs?'.format(team_batting), 'How many fours will batsmen {} hit in the next 5 overs'.format(batsmen_2), 'How many wickets will {} take in the next five overs'.format(bowler_name), 'Will team {} lose its {} wicket in the next five overs'.format(team_batting, wicket_number), 'Will team {} cross {} in the next 5 overs'.format(team_batting, target_runs)]
+    questions_general_overs = ['How many runs will team {} make in the next 5 overs?'.format(team_batting), 'How many fours will batsman {} hit in the next 5 overs'.format(batsmen_2), 'How many wickets will {} take in the next five overs'.format(bowler_name), 'Will team {} lose its {} wicket in the next five overs'.format(team_batting, wicket_number), 'Will team {} cross {} in the next 5 overs'.format(team_batting, target_runs)]
 
     special_questions = ['Will team {} cross 50 runs in the next over?'.format(team_batting), 'Will team {} cross 100 runs in the next over?'.format(team_batting), 'Will {} score a half centuary in the next over?'.format(batsmen), 'Will {} score a centuary in the next over?'.format(batsmen), 'How many runs will the next partnership between batsman {} and {} be?'.format(batsmen_1, batsmen_2)]
 
     if team_batting_overs < 15:
         question = [*questions_general, *questions_general_overs]
+        options = [*options_questions_general, options_questions_general_overs]
     else:
         question = questions_general
+        options = options_questions_general
 
     question_number = random.randint(0, len(question) - 1)
     question = question[question_number]
+    option1 = options[0][question_number]
+    option2 = options[1][question_number]
 
     special_question = 0
 
@@ -320,18 +348,28 @@ def success():
 
     if 40 < team_batting_runs < 45:
         question = special_questions[0]
+        option1 = options_special_questions[0][0]
+        option2 = options_special_questions[1][0]
         special_question = 1
     elif 90 < team_batting_runs < 95:
         question = special_questions[1]
+        option1 = options_special_questions[0][1]
+        option2 = options_special_questions[1][1]
         special_question = 2
     elif (43 < batsmen_1_runs < 47) or (43 < batsmen_2_runs < 47):
         question = special_questions[2]
+        option1 = options_special_questions[0][2]
+        option2 = options_special_questions[1][2]
         special_question = 3
     elif (93 < batsmen_1_runs < 96) or (93 < batsmen_2_runs < 96):
         question = special_questions[3]
+        option1 = options_special_questions[0][3]
+        option2 = options_special_questions[1][3]
         special_question = 4
 
     print(question)
+    print(option1)
+    print(option2)
     print(match_curr_id)
 
     return render_template('success.html')
@@ -353,6 +391,10 @@ def scorecard():
     batsmen_1_fours = batsmen_1_fours,
     batsmen_2_fours = batsmen_2_fours,
     link = link_current_match)
+
+@auth.route('/propbetting')
+def propbetting():
+    return render_template('betting.html', question = question, option1 = option1, option2 = option2)
     
 @auth.route("/contact", methods=['POST', 'GET'])
 def contact():
