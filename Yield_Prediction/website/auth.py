@@ -9,6 +9,7 @@ from .form_contact import ContactForm, PredForm
 from http.client import responses
 import requests
 import random
+from datetime import datetime
 
 def getList(dict):
     return dict.keys()
@@ -110,6 +111,11 @@ def success():
         'X-RapidAPI-Key': "11321f9994mshb05a0bcc9d875e1p10afabjsn1541df1aeee8",
         'X-RapidAPI-Host': "cricbuzz-cricket.p.rapidapi.com"
         }
+    
+    seriesName_upcoming_new = []
+    start_times_new = []
+    match_status_new = []
+    match_details_arr_new = []
 
     #Link to scrape data about ongoing matches
 
@@ -120,12 +126,13 @@ def success():
     game_types = [0]
 
     for game_type in game_types:
+
         data = information['typeMatches'][game_type]['seriesMatches'] 
 
         series_list = [] #Different ongoing Series
         match_details = [] #Different ongoing Matches
 
-        for series_current in data:
+        for series_current in data[::len(data)-1]:
 
             #Some Necessary Data Formatting and Series Finding
             try:
@@ -135,6 +142,7 @@ def success():
 
             try:
                 series_list.append([curr_series_data['seriesName'], curr_series_data['seriesId']])
+                storage = curr_series_data['seriesName']
                 curr_series_data = curr_series_data['matches']
             except:
                 pass
@@ -143,13 +151,87 @@ def success():
                 curr_series_data['seriesAdWrapper'][0]['matchInfo']['matchInfo']
             
             for matchSet in curr_series_data:
-
-                print(matchSet['matchInfo']['matchFormat'])
-
+    
                 if (matchSet['matchInfo']['matchFormat'] == 'TEST') and (matchSet['matchInfo']['state'] != 'Complete'):
-
+                    seriesName_upcoming_new.append(storage)
+                    match_status_new.append('Live')
+                    match_details_fire = matchSet['matchInfo']['team1']['teamName'] + str(" ") + str("vs") + str(" ") + matchSet['matchInfo']['team2']['teamName']
+                    match_details_arr_new.append(match_details_fire)
                     #Getting current Match ID
 
+                    dt_object = datetime.fromtimestamp(int(matchSet['matchInfo']['startDate'])/1000)
+                    start_times_new.append(str(dt_object))
+
+    list_types = ['international', 'league']
+
+    for match_type in list_types:
+        url_curr = "https://cricbuzz-cricket.p.rapidapi.com/schedule/v1/" + str(match_type) 
+        response = requests.request("GET", url_curr, headers=headers)
+        information = response.json()
+        series_types_new = information['matchScheduleMap'][0]['scheduleAdWrapper']['matchScheduleList']
+
+        for series in series_types_new:
+            matches_in_series = series['matchInfo']
+
+            for curr_match_name in matches_in_series:
+                if curr_match_name['matchFormat'] == 'T20':
+                    seriesName_upcoming_new.append(series['seriesName'])
+                    dt_object = datetime.fromtimestamp(int(curr_match_name['startDate'])/1000)
+                    start_times_new.append(str(dt_object))
+                    match_status_new.append('Upcoming')
+                    match_details_fire = curr_match_name['team1']['teamName'] + str(" ") + str("vs") + str(" ") + curr_match_name['team2']['teamName']
+                    match_details_arr_new.append(match_details_fire)  
+
+    return render_template('success.html', seriesName_upcoming_new=seriesName_upcoming_new, 
+    start_times_new = start_times_new,
+    match_status_new = match_status_new,
+    match_details_arr_new = match_details_arr_new,
+    len = len(match_details_arr_new)
+    )
+
+@auth.route('/scorecard')
+def scorecard():
+
+    headers = {
+        'X-RapidAPI-Key': "11321f9994mshb05a0bcc9d875e1p10afabjsn1541df1aeee8",
+        'X-RapidAPI-Host': "cricbuzz-cricket.p.rapidapi.com"
+        }
+
+    #Link to scrape data about ongoing matches
+
+    url = "https://cricbuzz-cricket.p.rapidapi.com/matches/v1/live"
+    response = requests.request("GET", url, headers=headers)
+    information = response.json()
+
+    game_types = [0]
+    for game_type in game_types:
+
+        data = information['typeMatches'][game_type]['seriesMatches'] 
+
+        series_list = [] #Different ongoing Series
+        match_details = [] #Different ongoing Matches
+
+        for series_current in data[::len(data)-1]:
+
+            #Some Necessary Data Formatting and Series Finding
+            try:
+                curr_series_data = series_current['seriesAdWrapper']
+            except:
+                pass
+
+            try:
+                series_list.append([curr_series_data['seriesName'], curr_series_data['seriesId']])
+                storage = curr_series_data['seriesName']
+                curr_series_data = curr_series_data['matches']
+            except:
+                pass
+
+            if len(curr_series_data) == 0:
+                curr_series_data['seriesAdWrapper'][0]['matchInfo']['matchInfo']
+            
+            for matchSet in curr_series_data:
+    
+                if (matchSet['matchInfo']['matchFormat'] == 'TEST') and (matchSet['matchInfo']['state'] != 'Complete'):
                     current_match = matchSet['matchInfo']['matchId']
                     match_details.append([matchSet['matchInfo']['matchId'], matchSet['matchInfo']['state']])
                     
@@ -169,6 +251,7 @@ def success():
                     team_2_full.append([matchSet['matchInfo']['team2']['teamName'], matchSet['matchScore']['team2Score']])
 
                     url = "https://cricbuzz-cricket.p.rapidapi.com/mcenter/v1/" + str(current_match) + "/scard"
+                    print(current_match)
 
                     responsetest_ = requests.request("GET", url, headers=headers)
 
@@ -211,28 +294,28 @@ def success():
         team_currently_bowling = team_1_full
 
     team_batting = team_currently_batting[0][0]
-    global batsmen_1 
-    global batsmen_2 
-    global batsmen_1_runs
-    global batsmen_2_runs
-    global batsmen_1_balls
-    global batsmen_1_sr
-    global batsmen_2_sr
-    global batsmen_2_balls
-    global batsmen_1_sixes
-    global batsmen_2_sixes
-    global batsmen_1_fours
-    global batsmen_2_fours
+    batsmen_1 = 0
+    batsmen_2 = 0
+    batsmen_1_runs= 0
+    batsmen_2_runs= 0
+    batsmen_1_balls= 0
+    batsmen_1_sr= 0
+    batsmen_2_sr= 0
+    batsmen_2_balls= 0
+    batsmen_1_sixes= 0
+    batsmen_2_sixes= 0
+    batsmen_1_fours= 0
+    batsmen_2_fours= 0
 
     team_bowling = team_currently_bowling[0][0]
-    global bowler_name
-    global bowler_overs
-    global bowler_runs
-    global bowler_wickets
-    global bowler_maidens
-    global bowler_econ
-    global bowler_no_ball
-    global bowler_wides
+    bowler_name= 0
+    bowler_overs= 0
+    bowler_runs= 0
+    bowler_wickets= 0
+    bowler_maidens= 0
+    bowler_econ= 0
+    bowler_no_ball= 0
+    bowler_wides= 0
 
     global questions_general
     global questions_general_overs
@@ -292,7 +375,7 @@ def success():
             bowler_no_ball = int(bowler[8])
             bowler_wides = int(bowler[9])
             break
-
+    
     try:
         if (43 < batsmen_1_runs < 47):
             batsmen = batsmen_1
@@ -342,8 +425,6 @@ def success():
 
     special_question = 0
 
-    global match_curr_id
-
     match_curr_id = match_details[0][0]
 
     if 40 < team_batting_runs < 45:
@@ -371,11 +452,8 @@ def success():
     print(option1)
     print(option2)
     print(match_curr_id)
+    print(batsmen_1)
 
-    return render_template('success.html')
-
-@auth.route('/scorecard')
-def scorecard():
     link_current_match = "https://www.cricbuzz.com/live-cricket-scores/" + str(match_curr_id)
 
     return render_template('scorecard.html', batsmen_1 = batsmen_1,
