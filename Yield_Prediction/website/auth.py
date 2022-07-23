@@ -381,13 +381,9 @@ def scorecard():
     global option1
     global option2
 
-    options_questions_general = [
-        ['Increase', '2 or Above', '1 or Above', '2 or Above', 'Yes', 'Yes', 'Yes', 'Increase'],
-        ['Decrease', 'Under 2', 'Under 1', 'Under 2', 'No', 'No', 'No', 'Decrease']]
+    options_questions_general = [['Increase', 'Decrease'], ['2 or Above', 'Under 2'], ['1 or Above', 'Under 1'], ['2 or Above', 'Under 2'], ['Yes', 'No'], ['Yes', 'No'], ['Yes', 'No'], ['Increase', 'Decrease']]
 
-    options_questions_general_overs = [
-        ['Over 40', '7 or Above', '2 or Above', 'Yes', 'Yes'],
-        ['Under 40', 'Under 7', 'Under 2', 'No', 'No']]
+    options_questions_general_overs = [['Over 40', 'Under 40'], ['7 or Above', 'Under 7'], ['2 or Above', 'Under 2'], ['Yes', 'No'], ['Yes', 'No']]
 
     options_special_questions = [
         ['Yes', 'Yes', 'Yes', 'Yes', 'Over 50'],
@@ -405,7 +401,7 @@ def scorecard():
 
     if team_batting_overs < 15:
         question = [*questions_general, *questions_general_overs]
-        options = [*options_questions_general, options_questions_general_overs]
+        options = [*options_questions_general, *options_questions_general_overs]
     else:
         question = questions_general
         options = options_questions_general
@@ -413,8 +409,8 @@ def scorecard():
     question_number = random.randint(0, len(question) - 1)
     
     question = question[question_number]
-    option1 = options[0][question_number]
-    option2 = options[1][question_number]
+    option1 = options[question_number][0]
+    option2 = options[question_number][1]
 
     special_question = 0
 
@@ -422,29 +418,21 @@ def scorecard():
 
     if 40 < team_batting_runs < 45:
         question = special_questions[0]
-        option1 = options_special_questions[0][0]
-        option2 = options_special_questions[1][0]
         special_question = 1
         option1 = options_special_questions[0][0]
         option2 = options_special_questions[1][0]
     elif 90 < team_batting_runs < 95:
         question = special_questions[1]
-        option1 = options_special_questions[0][1]
-        option2 = options_special_questions[1][1]
         special_question = 2
         option1 = options_special_questions[0][1]
         option2 = options_special_questions[1][1]
     elif (43 < batsmen_1_runs < 47) or (43 < batsmen_2_runs < 47):
         question = special_questions[2]
-        option1 = options_special_questions[0][2]
-        option2 = options_special_questions[1][2]
         special_question = 3
         option1 = options_special_questions[0][2]
         option2 = options_special_questions[1][2]
     elif (93 < batsmen_1_runs < 96) or (93 < batsmen_2_runs < 96):
         question = special_questions[3]
-        option1 = options_special_questions[0][3]
-        option2 = options_special_questions[1][3]
         special_question = 4
         option1 = options_special_questions[0][3]
         option2 = options_special_questions[1][3]
