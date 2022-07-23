@@ -308,6 +308,12 @@ def scorecard():
     bowler_no_ball= 0
     bowler_wides= 0
 
+    global questions_general
+    global questions_general_overs
+    global special_questions
+    global question_number
+    global question
+
     count_batter = 0 
 
     team_batting_stats = team_currently_batting[0][1]['inngs1']
@@ -389,7 +395,9 @@ def scorecard():
 
     questions_general = ['How will the strike rate of {} of {} change in the next over'.format(batsmen_1, batsmen_1_sr),'How many fours will batsman {} hit in the next over?'.format(batsmen_2), 'How many sixes will batsman {} hit in the next over?'.format(batsmen_1), 'How many wides will bowler {} bowl in his next over?'.format(bowler_name), 'Will {} take a wicket in the over'.format(bowler_name), 'Currently bowled {} wides, will {} bowl another one this over?'.format(off_balls, bowler_name), 'Currently bowled {} maidens, will {} bowl another one this over?'.format(bowler_maidens, bowler_name), 'How will the economy of {} of {} change in the next over'.format(bowler_name, bowler_econ)]
 
-    questions_general_overs = ['How many runs will team {} make in the next 5 overs?'.format(team_batting), 'How many fours will batsmen {} hit in the next 5 overs'.format(batsmen_2), 'How many wickets will {} take in the next five overs'.format(bowler_name), 'Will team {} lose its {} wicket in the next five overs'.format(team_batting, wicket_number), 'Will team {} cross {} in the next 5 overs'.format(team_batting, target_runs)]
+    questions_general = ['How will the strike rate of {} of {} change in the next over'.format(batsmen_1, batsmen_1_sr),'How many fours will batsman {} hit in the next over?'.format(batsmen_2), 'How many sixes will batsman {} hit in the next over?'.format(batsmen_1), 'How many wides will bowler {} bowl in his next over?'.format(bowler), 'Will {} take a wicket in the over'.format(bowler), 'Currently bowled {} wides, will {} bowl another one this over?'.format(off_balls, bowler), 'Currently bowled {} maidens, will {} bowl another one this over?'.format(bowler_maidens, bowler), 'How will the economy of {} of {} change in the next over'.format(bowler, bowler_econ)]
+
+    questions_general_overs = ['How many runs will team {} make in the next 5 overs?'.format(team_batting), 'How many fours will batsman {} hit in the next 5 overs'.format(batsmen_2), 'How many wickets will {} take in the next five overs'.format(bowler_name), 'Will team {} lose its {} wicket in the next five overs'.format(team_batting, wicket_number), 'Will team {} cross {} in the next 5 overs'.format(team_batting, target_runs)]
 
     special_questions = ['Will team {} cross 50 runs in the next over?'.format(team_batting), 'Will team {} cross 100 runs in the next over?'.format(team_batting), 'Will {} score a half centuary in the next over?'.format(batsmen), 'Will {} score a centuary in the next over?'.format(batsmen), 'How many runs will the next partnership between batsman {} and {} be?'.format(batsmen_1, batsmen_2)]
     
@@ -414,24 +422,38 @@ def scorecard():
 
     if 40 < team_batting_runs < 45:
         question = special_questions[0]
+        option1 = options_special_questions[0][0]
+        option2 = options_special_questions[1][0]
         special_question = 1
         option1 = options_special_questions[0][0]
         option2 = options_special_questions[1][0]
     elif 90 < team_batting_runs < 95:
         question = special_questions[1]
+        option1 = options_special_questions[0][1]
+        option2 = options_special_questions[1][1]
         special_question = 2
         option1 = options_special_questions[0][1]
         option2 = options_special_questions[1][1]
     elif (43 < batsmen_1_runs < 47) or (43 < batsmen_2_runs < 47):
         question = special_questions[2]
+        option1 = options_special_questions[0][2]
+        option2 = options_special_questions[1][2]
         special_question = 3
         option1 = options_special_questions[0][2]
         option2 = options_special_questions[1][2]
     elif (93 < batsmen_1_runs < 96) or (93 < batsmen_2_runs < 96):
         question = special_questions[3]
+        option1 = options_special_questions[0][3]
+        option2 = options_special_questions[1][3]
         special_question = 4
         option1 = options_special_questions[0][3]
         option2 = options_special_questions[1][3]
+
+    print(question)
+    print(option1)
+    print(option2)
+    print(match_curr_id)
+    print(batsmen_1)
 
     link_current_match = "https://www.cricbuzz.com/live-cricket-scores/" + str(match_curr_id)
 
