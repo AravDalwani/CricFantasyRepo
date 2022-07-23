@@ -34,8 +34,7 @@ def login():
     if request.method == 'POST':
         email = request.form.get("email")
         password = request.form.get("password")
-        print(email)
-        print(password)
+
 
         user = User.query.filter_by(email=email).first()
         if user:
@@ -105,10 +104,11 @@ def logout():
 def index():
     return render_template("index.html")
 
-@auth.route('/success')
+@auth.route('/success', methods=['GET', 'POST'])
 def success():
+
     headers = {
-        'X-RapidAPI-Key': "11321f9994mshb05a0bcc9d875e1p10afabjsn1541df1aeee8",
+        'X-RapidAPI-Key': "6dc8a9fa2dmshd76336d1779068ap174c41jsn3a631cdb3743",
         'X-RapidAPI-Host': "cricbuzz-cricket.p.rapidapi.com"
         }
     
@@ -116,6 +116,13 @@ def success():
     start_times_new = []
     match_status_new = []
     match_details_arr_new = []
+    match_ID_new = []
+    
+    global team_1_data
+    global team_2_data
+
+    team_1_data = []
+    team_2_data = []
 
     #Link to scrape data about ongoing matches
 
@@ -123,44 +130,46 @@ def success():
     response = requests.request("GET", url, headers=headers)
     information = response.json()
 
-    game_types = [0]
+    game_types = [0, 1]
+    try:
+        for game_type in game_types:
 
-    for game_type in game_types:
+            data = information['typeMatches'][game_type]['seriesMatches'] 
 
-        data = information['typeMatches'][game_type]['seriesMatches'] 
+            series_list = [] #Different ongoing Series
+            match_details = [] #Different ongoing Matches
 
-        series_list = [] #Different ongoing Series
-        match_details = [] #Different ongoing Matches
+            for series_current in data[::len(data)-1]:
 
-        for series_current in data[::len(data)-1]:
+                #Some Necessary Data Formatting and Series Finding
+                try:
+                    curr_series_data = series_current['seriesAdWrapper']
+                except:
+                    pass
 
-            #Some Necessary Data Formatting and Series Finding
-            try:
-                curr_series_data = series_current['seriesAdWrapper']
-            except:
-                pass
+                try:
+                    series_list.append([curr_series_data['seriesName'], curr_series_data['seriesId']])
+                    storage = curr_series_data['seriesName']
+                    curr_series_data = curr_series_data['matches']
+                except:
+                    pass
+                
+                for matchSet in curr_series_data:
+                    if (matchSet['matchInfo']['matchFormat'] == 'T20') and (matchSet['matchInfo']['state'] != 'Complete'):
+                        seriesName_upcoming_new.append(storage)
+                        match_status_new.append('Live')
+                        match_details_fire = matchSet['matchInfo']['team1']['teamName'] + str(" ") + str("vs") + str(" ") + matchSet['matchInfo']['team2']['teamName']
+                        match_details_arr_new.append(match_details_fire)
+                        #Getting current Match ID
 
-            try:
-                series_list.append([curr_series_data['seriesName'], curr_series_data['seriesId']])
-                storage = curr_series_data['seriesName']
-                curr_series_data = curr_series_data['matches']
-            except:
-                pass
+                        dt_object = datetime.fromtimestamp(int(matchSet['matchInfo']['startDate'])/1000)
+                        start_times_new.append(str(dt_object))
+                        match_ID_new.append(int(matchSet['matchInfo']['matchId']))
+                        team_1_data.append([matchSet['matchInfo']['team1']['teamName'], matchSet['matchScore']['team1Score']])
+                        team_2_data.append([matchSet['matchInfo']['team2']['teamName'], matchSet['matchScore']['team2Score']])
 
-            if len(curr_series_data) == 0:
-                curr_series_data['seriesAdWrapper'][0]['matchInfo']['matchInfo']
-            
-            for matchSet in curr_series_data:
-    
-                if (matchSet['matchInfo']['matchFormat'] == 'TEST') and (matchSet['matchInfo']['state'] != 'Complete'):
-                    seriesName_upcoming_new.append(storage)
-                    match_status_new.append('Live')
-                    match_details_fire = matchSet['matchInfo']['team1']['teamName'] + str(" ") + str("vs") + str(" ") + matchSet['matchInfo']['team2']['teamName']
-                    match_details_arr_new.append(match_details_fire)
-                    #Getting current Match ID
-
-                    dt_object = datetime.fromtimestamp(int(matchSet['matchInfo']['startDate'])/1000)
-                    start_times_new.append(str(dt_object))
+    except:
+        pass
 
     list_types = ['international', 'league']
 
@@ -181,110 +190,86 @@ def success():
                     match_status_new.append('Upcoming')
                     match_details_fire = curr_match_name['team1']['teamName'] + str(" ") + str("vs") + str(" ") + curr_match_name['team2']['teamName']
                     match_details_arr_new.append(match_details_fire)  
+    
+    global Details
+    global required_1
+    global required_2
+
+    if request.method == 'POST':
+        Details = request.form.get("Details")
+        index_pos = match_ID_new.index(Details)
+        required_1 = team_1_data[index_pos]
+        required_2 = team_2_data[index_pos]
+        return redirect(url_for('auth.scorecard'))
+
 
     return render_template('success.html', seriesName_upcoming_new=seriesName_upcoming_new, 
     start_times_new = start_times_new,
     match_status_new = match_status_new,
     match_details_arr_new = match_details_arr_new,
-    len = len(match_details_arr_new)
+    len = len(match_details_arr_new),
+    match_ID_new = match_ID_new
     )
+    
 
-@auth.route('/scorecard')
+@auth.route('/scorecard', methods=['GET', 'POST'])
 def scorecard():
 
     headers = {
-        'X-RapidAPI-Key': "11321f9994mshb05a0bcc9d875e1p10afabjsn1541df1aeee8",
+        'X-RapidAPI-Key': "6dc8a9fa2dmshd76336d1779068ap174c41jsn3a631cdb3743",
         'X-RapidAPI-Host': "cricbuzz-cricket.p.rapidapi.com"
         }
 
     #Link to scrape data about ongoing matches
 
-    url = "https://cricbuzz-cricket.p.rapidapi.com/matches/v1/live"
-    response = requests.request("GET", url, headers=headers)
-    information = response.json()
+    #Batsmen Bowler Data for a Single Game
 
-    game_types = [0]
-    for game_type in game_types:
+    batsmen_team_one = []
+    batsmen_team_two = []
+    bowlers_team_one = []
+    bowlers_team_two = []
 
-        data = information['typeMatches'][game_type]['seriesMatches'] 
+    #Meta Data for Each Team - Total Runs, Name, etc
+    print(Details)
+    url = "https://cricbuzz-cricket.p.rapidapi.com/mcenter/v1/" + str(Details) + "/scard"
 
-        series_list = [] #Different ongoing Series
-        match_details = [] #Different ongoing Matches
+    responsetest_ = requests.request("GET", url, headers=headers)
 
-        for series_current in data[::len(data)-1]:
+    information_match = responsetest_.json()
 
-            #Some Necessary Data Formatting and Series Finding
-            try:
-                curr_series_data = series_current['seriesAdWrapper']
-            except:
-                pass
+    cycle_number  = 0
 
-            try:
-                series_list.append([curr_series_data['seriesName'], curr_series_data['seriesId']])
-                storage = curr_series_data['seriesName']
-                curr_series_data = curr_series_data['matches']
-            except:
-                pass
+    team_currently_batting = []
+    team_currently_bowling = []
+    team_1_full = [] 
+    team_2_full = [] 
 
-            if len(curr_series_data) == 0:
-                curr_series_data['seriesAdWrapper'][0]['matchInfo']['matchInfo']
-            
-            for matchSet in curr_series_data:
-    
-                if (matchSet['matchInfo']['matchFormat'] == 'TEST') and (matchSet['matchInfo']['state'] != 'Complete'):
-                    current_match = matchSet['matchInfo']['matchId']
-                    match_details.append([matchSet['matchInfo']['matchId'], matchSet['matchInfo']['state']])
-                    
-                    team_1_full = [] #Batmens-Bowler Data and other Meta for Team 1
-                    team_2_full = [] #Batmens-Bowler Data and other Meta for Team 2
+    #Batsmen Bowler Data for a Game
+    team_1_full.append(required_1)
+    team_2_full.append(required_2)
 
-                    #Batsmen Bowler Data for a Single Game
+    for team_number_ID in information_match['scoreCard']:  
+        for data_point in team_number_ID['batTeamDetails']['batsmenData']:
+            curr_batsmen = team_number_ID['batTeamDetails']['batsmenData'][data_point]
+            if cycle_number == 0:
+                batsmen_team_one.append([curr_batsmen['batName'], curr_batsmen['isCaptain'], curr_batsmen['isKeeper'], curr_batsmen['runs'],curr_batsmen['balls'], curr_batsmen['strikeRate'], curr_batsmen['boundaries'],curr_batsmen['sixers'], curr_batsmen['wicketCode'], curr_batsmen['bowlerId'], curr_batsmen['fielderId1'], curr_batsmen['outDesc']])
+            else:
+                batsmen_team_two.append([curr_batsmen['batName'], curr_batsmen['isCaptain'], curr_batsmen['isKeeper'], curr_batsmen['runs'],curr_batsmen['balls'], curr_batsmen['strikeRate'], curr_batsmen['boundaries'],curr_batsmen['sixers'], curr_batsmen['wicketCode'], curr_batsmen['bowlerId'], curr_batsmen['fielderId1'], curr_batsmen['outDesc']])
 
-                    batsmen_team_one = []
-                    batsmen_team_two = []
-                    bowlers_team_one = []
-                    bowlers_team_two = []
+        for data_point in team_number_ID['bowlTeamDetails']['bowlersData']:
+            curr_bowler = team_number_ID['bowlTeamDetails']['bowlersData'][data_point]
 
-                    #Meta Data for Each Team - Total Runs, Name, etc
+            if cycle_number == 0:
+                bowlers_team_two.append([curr_bowler['bowlName'], curr_bowler['isCaptain'], curr_bowler['isKeeper'], curr_bowler['overs'], curr_bowler['maidens'], curr_bowler['runs'], curr_bowler['wickets'], curr_bowler['economy'], curr_bowler['no_balls'], curr_bowler['wides']])
+            else:
+                bowlers_team_one.append([curr_bowler['bowlName'], curr_bowler['isCaptain'], curr_bowler['isKeeper'], curr_bowler['overs'], curr_bowler['maidens'], curr_bowler['runs'], curr_bowler['wickets'], curr_bowler['economy'], curr_bowler['no_balls'], curr_bowler['wides']])
 
-                    team_1_full.append([matchSet['matchInfo']['team1']['teamName'], matchSet['matchScore']['team1Score']])
-                    team_2_full.append([matchSet['matchInfo']['team2']['teamName'], matchSet['matchScore']['team2Score']])
+        cycle_number += 1
 
-                    url = "https://cricbuzz-cricket.p.rapidapi.com/mcenter/v1/" + str(current_match) + "/scard"
-                    print(current_match)
-
-                    responsetest_ = requests.request("GET", url, headers=headers)
-
-                    information_match = responsetest_.json()
-
-                    cycle_number  = 0
-
-                    #Batsmen Bowler Data for a Game
-
-                    for team_number_ID in information_match['scoreCard']:
-                        for data_point in team_number_ID['batTeamDetails']['batsmenData']:
-                            curr_batsmen = team_number_ID['batTeamDetails']['batsmenData'][data_point]
-                            if cycle_number == 0:
-                                batsmen_team_one.append([curr_batsmen['batName'], curr_batsmen['isCaptain'], curr_batsmen['isKeeper'], curr_batsmen['runs'],curr_batsmen['balls'], curr_batsmen['strikeRate'], curr_batsmen['boundaries'],curr_batsmen['sixers'], curr_batsmen['wicketCode'], curr_batsmen['bowlerId'], curr_batsmen['fielderId1'], curr_batsmen['outDesc']])
-                            else:
-                                batsmen_team_two.append([curr_batsmen['batName'], curr_batsmen['isCaptain'], curr_batsmen['isKeeper'], curr_batsmen['runs'],curr_batsmen['balls'], curr_batsmen['strikeRate'], curr_batsmen['boundaries'],curr_batsmen['sixers'], curr_batsmen['wicketCode'], curr_batsmen['bowlerId'], curr_batsmen['fielderId1'], curr_batsmen['outDesc']])
-
-                        for data_point in team_number_ID['bowlTeamDetails']['bowlersData']:
-                            curr_bowler = team_number_ID['bowlTeamDetails']['bowlersData'][data_point]
-
-                            if cycle_number == 0:
-                                bowlers_team_two.append([curr_bowler['bowlName'], curr_bowler['isCaptain'], curr_bowler['isKeeper'], curr_bowler['overs'], curr_bowler['maidens'], curr_bowler['runs'], curr_bowler['wickets'], curr_bowler['economy'], curr_bowler['no_balls'], curr_bowler['wides']])
-                            else:
-                                bowlers_team_one.append([curr_bowler['bowlName'], curr_bowler['isCaptain'], curr_bowler['isKeeper'], curr_bowler['overs'], curr_bowler['maidens'], curr_bowler['runs'], curr_bowler['wickets'], curr_bowler['economy'], curr_bowler['no_balls'], curr_bowler['wides']])
-
-                        cycle_number += 1
-
-                    team_1_full.append(batsmen_team_one)
-                    team_2_full.append(batsmen_team_two)
-                    team_1_full.append(bowlers_team_one)
-                    team_2_full.append(bowlers_team_two)
-                else:
-                    pass
+    team_1_full.append(batsmen_team_one)
+    team_2_full.append(batsmen_team_two)
+    team_1_full.append(bowlers_team_one)
+    team_2_full.append(bowlers_team_two)
 
     team_currently_batting = team_1_full
     team_currently_bowling = team_2_full
@@ -294,8 +279,8 @@ def scorecard():
         team_currently_bowling = team_1_full
 
     team_batting = team_currently_batting[0][0]
-    batsmen_1 = 0
-    batsmen_2 = 0
+    batsmen_1 = 'None'
+    batsmen_2 = 'None'
     batsmen_1_runs= 0
     batsmen_2_runs= 0
     batsmen_1_balls= 0
@@ -308,7 +293,7 @@ def scorecard():
     batsmen_2_fours= 0
 
     team_bowling = team_currently_bowling[0][0]
-    bowler_name= 0
+    bowler_name= 'None'
     bowler_overs= 0
     bowler_runs= 0
     bowler_wickets= 0
@@ -335,15 +320,12 @@ def scorecard():
     except:
         team_batting_wickets = 0 
 
-    batsmen_1_ = False
-    batsmen_2_ = False
-
     for batter in team_currently_batting[1]:
 
         if count_batter == 2:
             break
 
-        if (batter[-1] == 'batting') and (batsmen_1_ == False) and (count_batter == 0):
+        if (batter[-1] == 'batting') and (batsmen_1 == 'None') and (count_batter == 0):
             batsmen_1 = str(batter[0])
             batsmen_1_runs = int(batter[3])
             batsmen_1_balls = int(batter[4])
@@ -353,7 +335,7 @@ def scorecard():
             count_batter += 1
             batsmen_1_ = True
 
-        elif (batter[-1] == 'batting') and (batsmen_2_ == False) and (count_batter == 1):
+        elif (batter[-1] == 'batting') and (batsmen_2 == 'None') and (count_batter == 1):
             batsmen_2 = str(batter[0])
             batsmen_2_runs = int(batter[3])
             batsmen_2_balls = int(batter[4])
@@ -410,6 +392,8 @@ def scorecard():
     questions_general_overs = ['How many runs will team {} make in the next 5 overs?'.format(team_batting), 'How many fours will batsman {} hit in the next 5 overs'.format(batsmen_2), 'How many wickets will {} take in the next five overs'.format(bowler_name), 'Will team {} lose its {} wicket in the next five overs'.format(team_batting, wicket_number), 'Will team {} cross {} in the next 5 overs'.format(team_batting, target_runs)]
 
     special_questions = ['Will team {} cross 50 runs in the next over?'.format(team_batting), 'Will team {} cross 100 runs in the next over?'.format(team_batting), 'Will {} score a half centuary in the next over?'.format(batsmen), 'Will {} score a centuary in the next over?'.format(batsmen), 'How many runs will the next partnership between batsman {} and {} be?'.format(batsmen_1, batsmen_2)]
+    
+    global question
 
     if team_batting_overs < 15:
         question = [*questions_general, *questions_general_overs]
@@ -419,13 +403,14 @@ def scorecard():
         options = options_questions_general
 
     question_number = random.randint(0, len(question) - 1)
+    
     question = question[question_number]
     option1 = options[0][question_number]
     option2 = options[1][question_number]
 
     special_question = 0
 
-    match_curr_id = match_details[0][0]
+    match_curr_id = int(Details)
 
     if 40 < team_batting_runs < 45:
         question = special_questions[0]
