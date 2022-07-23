@@ -68,36 +68,36 @@
       <h2 class="mb-5">Ongoing Matches</h2>
   
       <div class="table-responsive">
-
-        <table class="table table-striped custom-table">
-          <thead>
-            <tr>
-              
-              <th scope="col">Match Format</th>
-              <th scope="col">Match Name</th>
-              <th scope="col">Tournament</th>
-              <th scope="col">Starting Time</th>
-              <th scope="col">Status</th>
-              <th scope="col"></th>
-            </tr>
-          </thead>
-          <tbody>
-            {% for i in range(0, len) %}
-            <tr scope="row">
-              <td>
-                T20
-              </td>
-              <td>{{match_details_arr_new[i]}}</td>
-              <td>
-                {{seriesName_upcoming_new[i]}}
-              </td>
-              <td>{{start_times_new[i]}}</td>
-              <td>{{match_status_new[i]}}</td>
-              <td><a href={{url_for('auth.scorecard')}} class="more">Details</a></td>
-            </tr>
-            {% endfor %}
-          </tbody>
-        </table>
+        <form method = "post">
+          <table class="table table-striped custom-table">
+            <thead>
+              <tr>
+                <th scope="col">Match Format</th>
+                <th scope="col">Match Name</th>
+                <th scope="col">Tournament</th>
+                <th scope="col">Starting Time</th>
+                <th scope="col">Status</th>
+                <th scope="col"></th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for i in range(0, len) %}
+              <tr scope="row">
+                <td>
+                  T20
+                </td>
+                <td>{{match_details_arr_new[i]}}</td>
+                <td>
+                  {{seriesName_upcoming_new[i]}}
+                </td>
+                <td>{{start_times_new[i]}}</td>
+                <td>{{match_status_new[i]}}</td>
+                <td><a class="nav-link" href={{url_for('auth.scorecard')}}><button name="Details" value={{match_ID_new[i]}} id = "Details">Details</button></a></td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </form>
       </div>
 
 
