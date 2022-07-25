@@ -93,6 +93,7 @@
                 <td>{{start_times_new[i]}}</td>
                 <td>{{match_status_new[i]}}</td>
                 <td><a class="nav-link" href={{url_for('auth.scorecard')}}><button name="Details" value={{match_ID_new[i]}} id = "Details">Details</button></a></td>
+                <td><a class="nav-link" href={{url_for('auth.propbetting')}}><button name="betting" value={{match_ID_new[i]}} id = "Details">Betting</button></a></td>
               </tr>
               {% endfor %}
             </tbody>
