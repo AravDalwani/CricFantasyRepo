@@ -196,7 +196,8 @@ def success():
                     start_times_new.append(str(dt_object))
                     match_status_new.append('Upcoming')
                     match_details_fire = curr_match_name['team1']['teamName'] + str(" ") + str("vs") + str(" ") + curr_match_name['team2']['teamName']
-                    match_details_arr_new.append(match_details_fire)  
+                    match_details_arr_new.append(match_details_fire)
+                    match_ID_new.append(str(""))
     
     global Details
     global required_1
@@ -316,10 +317,13 @@ def scorecard():
 
     count_batter = 0 
 
+    print(team_currently_batting)
+
     team_batting_stats = team_currently_batting[0][1]['inngs1']
 
     team_batting_runs = team_batting_stats['runs']
     team_batting_overs = team_batting_stats['overs']
+
 
     try:
         team_batting_wickets = team_batting_stats['wickets']
@@ -437,12 +441,6 @@ def scorecard():
         option1 = options_special_questions[0][3]
         option2 = options_special_questions[1][3]
 
-    print(question)
-    print(option1)
-    print(option2)
-    print(match_curr_id)
-    print(batsmen_1)
-
     link_current_match = "https://www.cricbuzz.com/live-cricket-scores/" + str(match_curr_id)
 
     return render_template('scorecard.html', batsmen_1 = batsmen_1,
@@ -468,6 +466,17 @@ def contact():
 
     return render_template("contact.html", form=form)
 
-@auth.route('/propbetting')
+@auth.route('/propbetting', methods=['POST', 'GET'])
 def propbetting():
+    if request.method == 'POST':
+        try:
+            c1 = request.form.get(option1)
+        except:
+            c1 = 0
+
+        try:
+            c2 = request.form.get(option1)
+        except:
+            c2 = 0
+            
     return render_template('betting.html', question = question, option1 = option1, option2 = option2)
