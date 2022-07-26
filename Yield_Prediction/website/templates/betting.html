@@ -71,12 +71,12 @@
                <th scope="col">Option 2</th>
              </tr>
            </thead>
-           <form method = "post">
+            <form method = "post">
                <tbody>
                <tr scope="row">
                   <td><a href="#">{{question}}</a></td>
-                  <td><a href={{url_for('auth.scorecard')}}><button name={{option1}} value={{option1}} id = {{option1}}>{{option1}}</button></a></td>
-                  <td><a href={{url_for('auth.scorecard')}} class="more">><button name={{option2}} value={{option2}} id = {{option2}}>{{option2}}</button></a></td>
+                  <td><button name='Option' value={{option1}} id ='Option'>{{option1}}</button></td>
+                  <td><button name='Option' value={{option2}} id ='Option'>{{option2}}</button></td>
                </tr>
                </tbody>
             </form>

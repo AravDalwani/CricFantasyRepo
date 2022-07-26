@@ -13,13 +13,13 @@ class User(db.Model, UserMixin):
 
 class Match(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement =True)
-    player_id = db.Column(db.ForeignKey('user.id', ondelete = "CASCADE"), nullable = False)
+    player_id = db.Column(db.Integer, db.ForeignKey('user.id', ondelete="CASCADE"), nullable=False)
     matchid = db.Column(db.Integer)
     prop = db.Column(db.String)
-    bet = db.Column(db.Boolean)
     input = db.Column(db.String)
     threshold = db.Column(db.Boolean)
-    result = db.Column(db.Boolean)
+    resolved = db.Column(db.Boolean)
+    #result = db.Column(db.Boolean)
 
 
 

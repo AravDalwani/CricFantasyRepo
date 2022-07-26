@@ -1,6 +1,6 @@
 from flask import Blueprint, render_template, redirect, url_for, request, flash
 from . import db
-from .models import User
+from .models import User, Match
 from .views import views
 from flask_login import login_user, logout_user, login_required, current_user
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -153,7 +153,7 @@ def success():
                     pass
                 
                 for matchSet in curr_series_data:
-                    if (matchSet['matchInfo']['matchFormat'] == 'T20') and (matchSet['matchInfo']['state'] != 'Complete'):
+                    if (matchSet['matchInfo']['matchFormat'] == 'TEST') and (matchSet['matchInfo']['state'] != 'Complete'):
                         seriesName_upcoming_new.append(storage)
                         match_status_new.append('Live')
                         match_details_fire = matchSet['matchInfo']['team1']['teamName'] + str(" ") + str("vs") + str(" ") + matchSet['matchInfo']['team2']['teamName']
@@ -218,8 +218,8 @@ def success():
     len = len(match_details_arr_new),
     match_ID_new = match_ID_new
     )
-    
 
+@login_required
 @auth.route('/scorecard', methods=['GET', 'POST'])
 def scorecard():
 
@@ -395,7 +395,7 @@ def scorecard():
 
     questions_general = ['How will the strike rate of {} of {} change in the next over'.format(batsmen_1, batsmen_1_sr),'How many fours will batsman {} hit in the next over?'.format(batsmen_2), 'How many sixes will batsman {} hit in the next over?'.format(batsmen_1), 'How many wides will bowler {} bowl in his next over?'.format(bowler_name), 'Will {} take a wicket in the over'.format(bowler_name), 'Currently bowled {} wides, will {} bowl another one this over?'.format(off_balls, bowler_name), 'Currently bowled {} maidens, will {} bowl another one this over?'.format(bowler_maidens, bowler_name), 'How will the economy of {} of {} change in the next over'.format(bowler_name, bowler_econ)]
 
-    questions_general = ['How will the strike rate of {} of {} change in the next over'.format(batsmen_1, batsmen_1_sr),'How many fours will batsman {} hit in the next over?'.format(batsmen_2), 'How many sixes will batsman {} hit in the next over?'.format(batsmen_1), 'How many wides will bowler {} bowl in his next over?'.format(bowler), 'Will {} take a wicket in the over'.format(bowler), 'Currently bowled {} wides, will {} bowl another one this over?'.format(off_balls, bowler), 'Currently bowled {} maidens, will {} bowl another one this over?'.format(bowler_maidens, bowler), 'How will the economy of {} of {} change in the next over'.format(bowler, bowler_econ)]
+    questions_general = ['How will the strike rate of {} of {} change in the next over'.format(batsmen_1, batsmen_1_sr),'How many fours will batsman {} hit in the next over?'.format(batsmen_2), 'How many sixes will batsman {} hit in the next over?'.format(batsmen_1), 'How many wides will bowler {} bowl in his next over?'.format(bowler_name), 'Will {} take a wicket in the over'.format(bowler_name), 'Currently bowled {} wides, will {} bowl another one this over?'.format(off_balls, bowler_name), 'Currently bowled {} maidens, will {} bowl another one this over?'.format(bowler_maidens, bowler_name), 'How will the economy of {} of {} change in the next over'.format(bowler_name, bowler_econ)]
 
     questions_general_overs = ['How many runs will team {} make in the next 5 overs?'.format(team_batting), 'How many fours will batsman {} hit in the next 5 overs'.format(batsmen_2), 'How many wickets will {} take in the next five overs'.format(bowler_name), 'Will team {} lose its {} wicket in the next five overs'.format(team_batting, wicket_number), 'Will team {} cross {} in the next 5 overs'.format(team_batting, target_runs)]
 
@@ -455,7 +455,8 @@ def scorecard():
     batsmen_2_sixes = batsmen_2_sixes,
     batsmen_1_fours = batsmen_1_fours,
     batsmen_2_fours = batsmen_2_fours,
-    link = link_current_match)
+    link = link_current_match,
+    user=current_user)
     
 @auth.route("/contact", methods=['POST', 'GET'])
 def contact():
@@ -466,17 +467,21 @@ def contact():
 
     return render_template("contact.html", form=form)
 
+@login_required
 @auth.route('/propbetting', methods=['POST', 'GET'])
 def propbetting():
     if request.method == 'POST':
-        try:
-            c1 = request.form.get(option1)
-        except:
-            c1 = 0
+        input_user = request.form.get("Option")
+        new_match = Match(matchid=Details, prop=question, input = input_user, threshold = 1, resolved = False, player_id = current_user.id)
+        db.session.add(new_match)
+        db.session.commit()
 
-        try:
-            c2 = request.form.get(option1)
-        except:
-            c2 = 0
-            
-    return render_template('betting.html', question = question, option1 = option1, option2 = option2)
+        return redirect(url_for('auth.success'))        
+
+    return render_template('betting.html', question = question, option1 = option1, option2 = option2, user=current_user)
+
+@login_required
+@auth.route('/checkbet', methods=['POST', 'GET'])
+def checkbet():
+    match_data = Match.query.filter_by(player_id = current_user.id)
+    print(match_data)
