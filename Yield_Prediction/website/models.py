@@ -17,8 +17,11 @@ class Match(db.Model):
     matchid = db.Column(db.Integer)
     prop = db.Column(db.String)
     input = db.Column(db.String)
-    threshold = db.Column(db.Boolean)
+    curr_data = db.Column(db.Float)
+    type = db.Column(db.String)
+    threshold = db.Column(db.Integer)
     resolved = db.Column(db.Boolean)
+    over_number = db.Column(db.Integer)
     #result = db.Column(db.Boolean)
 
 
