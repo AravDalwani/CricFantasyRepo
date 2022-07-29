@@ -46,8 +46,10 @@ def login():
                 return redirect(url_for('auth.success'))
             else:
                 flash('Password is incorrect.', category='error')
+                print('Password is incorrect.')
         else:
             flash('Email does not exist.', category='error')
+            print('Email does not exist.')
 
     return render_template("login.html", user=current_user)
 
@@ -73,16 +75,22 @@ def sign_up():
 
         if email_exists:
             flash('Email is already in use.', category='error')
+            print('Email is already in use.')
         elif username_exists:
             flash('Username is already in use.', category='error')
+            print('Username is already in use.')
         elif password1 != password2:
             flash('Password don\'t match!', category='error')
+            print('Password don\'t match!')
         elif len(username) < 2:
             flash('Username is too short.', category='error')
+            print('Username is too short.')
         elif len(password1) < 6:
             flash('Password is too short.', category='error')
+            print('Password is too short.')
         elif len(email) < 4:
             flash("Email is invalid.", category='error')
+            print("Email is invalid.")
         else:
             new_user = User(email=email, username=username, password=generate_password_hash(
                 password1, method='sha256'))
@@ -90,6 +98,7 @@ def sign_up():
             db.session.commit()
             login_user(new_user, remember=True)
             flash('User created!')
+            print('User created!')
             return redirect(url_for('auth.login'))
 
     return render_template("signup.html", user=current_user)
@@ -154,7 +163,7 @@ def success():
                     pass
                 
                 for matchSet in curr_series_data:
-                    if (matchSet['matchInfo']['matchFormat'] == 'TEST') and (matchSet['matchInfo']['state'] != 'Complete'):
+                    if (matchSet['matchInfo']['matchFormat'] == 'T20') and (matchSet['matchInfo']['state'] != 'Complete'):
                         seriesName_upcoming_new.append(storage)
                         match_status_new.append('Live')
                         match_details_fire = matchSet['matchInfo']['team1']['teamName'] + str(" ") + str("vs") + str(" ") + matchSet['matchInfo']['team2']['teamName']
@@ -544,13 +553,14 @@ def contact():
 def propbetting():
     if request.method == 'POST':
         input_user = request.form.get("Option")
-        new_match = Match(matchid=Details, prop=question, input = input_user, threshold = 1, resolved = False, player_id = current_user.id, curr_data = values_stored, type = type, threshold = threshold, over_number = over_number)
+        new_match = Match(matchid=Details, prop=question, input = input_user, resolved = False, player_id = current_user.id, curr_data = values_stored, type = type, threshold = threshold, over_number = over_number)
         db.session.add(new_match)
         db.session.commit()
 
         return redirect(url_for('auth.success'))        
 
     return render_template('betting.html', question = question, option1 = option1, option2 = option2, user=current_user)
+
 
 @login_required
 @auth.route('/checkbet', methods=['POST', 'GET'])
@@ -703,15 +713,47 @@ def checkbet():
                     bowler_wides = int(bowler[9])
                     break
             
+
+            
             if type == '1':
                 if (math.floor(team_batting_overs) - bet.over_number) == 1:
-                    
+                    if (special_question == 1):
+                        conditional_change(prediction, info_file_splitted[1], team_batting_runs)
+                    elif (special_question == 2):
+                        conditional_change(prediction, info_file_splitted[1], team_batting_runs)
+                    elif (special_question == 3):
+                        if batsmen == 'batsmen_1':
+                            batsmen_stored = batsmen_1_runs
+                        else:
+                            batsmen_stored = batsmen_2_runs
+                        conditional_change(prediction, info_file_splitted[1], batsmen_stored)
+                    elif (special_question == 4):
+                        if batsmen == 'batsmen_1':
+                            batsmen_stored = batsmen_1_runs
+                        else:
+                            batsmen_stored = batsmen_2_runs
+                        conditional_change(prediction, info_file_splitted[1], batsmen_stored)
+                    elif (question_number == 0):
+                        conditional_change(prediction, info_file_splitted[1], batsmen_1_sr)
+                    elif (question_number == 1):
+                        prediction_change(prediction, info_file_splitted[1], batsmen_1_fours)
+                    elif (question_number == 2):
+                        prediction_change(prediction, info_file_splitted[1], batsmen_1_sixes)
+                    elif (question_number == 3):
+                        prediction_change(prediction, info_file_splitted[1], bowler_wides)
+                    elif (question_number == 4):
+                        prediction_change(prediction, info_file_splitted[1], bowler_wickets)
+                    elif (question_number == 5):
+                        prediction_change(prediction, info_file_splitted[1], team_batting_runs)
+                    elif (question_number == 6):
+                        prediction_change(prediction, info_file_splitted[1], batsmen_2_runs)
+                    elif (question_number == 7):
+                        prediction_change(prediction, info_file_splitted[1], bowler_wickets)
+                    elif (question_number == 8):
+                        conditional_change(prediction, info_file_splitted[1], team_batting_wickets)
 
             elif type == '5':
                 if (math.floor(team_batting_overs) - bet.over_number) == 5:
-
+                    pass
             elif type == 'threshold':
-
-
-            
-    print(match_data)
+                pass
