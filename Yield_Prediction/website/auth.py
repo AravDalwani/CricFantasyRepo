@@ -17,15 +17,28 @@ def getList(dict):
 
 def conditional_change(prediction, old_score, new_score):
     if new_score > old_score:
-        return True
+        if prediction == 'Increase':
+            print(True)
+        else:
+            print(False)
     else:
-        return False
+        if prediction == 'Decrease':
+            print(True)
+        else:
+            print(False)
 
-def prediction_change(prediction, old_value, new_value):
-    if (new_value - old_value) == float(prediction):
-        return True
+def prediction_change(prediction, old_value, new_value, threshold_new):
+    if (new_value - old_value) >= threshold_new:
+        if prediction == 'Increase':
+            return True
+        else:
+            return False    
     else:
-        return False
+        if prediction == 'Decrease':
+            return True
+        else:
+            return False
+
 
 auth = Blueprint("auth", __name__)
 mail = Mail()
@@ -140,7 +153,6 @@ def success():
     game_types = [0, 1, 2]
     try:
         for game_type in game_types:
-            print(game_type)
 
             data = information['typeMatches'][game_type]['seriesMatches'] 
 
@@ -327,8 +339,6 @@ def scorecard():
 
     count_batter = 0 
 
-    print(team_currently_batting)
-
     team_batting_stats = team_currently_batting[0][1]['inngs1']
 
     team_batting_runs = team_batting_stats['runs']
@@ -399,8 +409,8 @@ def scorecard():
     global option2
     global threshold
 
-    thresholds_general  = [-1, 2, 1, 2, -1, -1, -1]
-    thresholds_general_overs = [40, 7, 2, -1, -1] 
+    thresholds_general  = [-1, 2, 1, 2, 1, 1, 1, -1]
+    thresholds_general_overs = [40, 7, 2, 1, -1] 
     thresholds_special = [50, 100, 50, 100]
 
     options_questions_general = [['Increase', 'Decrease'], ['2 or Above', 'Under 2'], ['1 or Above', 'Under 1'], ['2 or Above', 'Under 2'], ['Yes', 'No'], ['Yes', 'No'], ['Yes', 'No'], ['Increase', 'Decrease']]
@@ -466,6 +476,7 @@ def scorecard():
 
     global values_stored
     global type
+
     if (special_question == 1):
         values_stored = team_batting_runs
         type = 'Threshold'
@@ -568,6 +579,9 @@ def checkbet():
     bet_total = Match.query.filter_by(player_id = current_user.id).all()
     for bet in bet_total:
         if bet.resolved == False:
+
+            print("hello")
+
             headers = {
                 'X-RapidAPI-Key': "6dc8a9fa2dmshd76336d1779068ap174c41jsn3a631cdb3743",
                 'X-RapidAPI-Host': "cricbuzz-cricket.p.rapidapi.com"
@@ -654,15 +668,7 @@ def checkbet():
             bowler_no_ball= 0
             bowler_wides= 0
 
-            global questions_general
-            global questions_general_overs
-            global special_questions
-            global question_number
-            global question
-
             count_batter = 0 
-
-            print(team_currently_batting)
 
             team_batting_stats = team_currently_batting[0][1]['inngs1']
 
@@ -688,7 +694,6 @@ def checkbet():
                     batsmen_1_fours = int(batter[6])
                     batsmen_1_sixes = int(batter[7])
                     count_batter += 1
-                    batsmen_1_ = True
 
                 elif (batter[-1] == 'batting') and (batsmen_2 == 'None') and (count_batter == 1):
                     batsmen_2 = str(batter[0])
@@ -698,7 +703,6 @@ def checkbet():
                     batsmen_2_fours = int(batter[6])
                     batsmen_2_sixes = int(batter[7])
                     count_batter += 1
-                    batsmen_1_ = True
 
             for bowler in team_currently_bowling[2]:
 
@@ -713,47 +717,74 @@ def checkbet():
                     bowler_wides = int(bowler[9])
                     break
             
-
-            
-            if type == '1':
-                if (math.floor(team_batting_overs) - bet.over_number) == 1:
-                    if (special_question == 1):
-                        conditional_change(prediction, info_file_splitted[1], team_batting_runs)
-                    elif (special_question == 2):
-                        conditional_change(prediction, info_file_splitted[1], team_batting_runs)
-                    elif (special_question == 3):
-                        if batsmen == 'batsmen_1':
-                            batsmen_stored = batsmen_1_runs
-                        else:
-                            batsmen_stored = batsmen_2_runs
-                        conditional_change(prediction, info_file_splitted[1], batsmen_stored)
-                    elif (special_question == 4):
-                        if batsmen == 'batsmen_1':
-                            batsmen_stored = batsmen_1_runs
-                        else:
-                            batsmen_stored = batsmen_2_runs
-                        conditional_change(prediction, info_file_splitted[1], batsmen_stored)
-                    elif (question_number == 0):
-                        conditional_change(prediction, info_file_splitted[1], batsmen_1_sr)
-                    elif (question_number == 1):
-                        prediction_change(prediction, info_file_splitted[1], batsmen_1_fours)
-                    elif (question_number == 2):
-                        prediction_change(prediction, info_file_splitted[1], batsmen_1_sixes)
-                    elif (question_number == 3):
-                        prediction_change(prediction, info_file_splitted[1], bowler_wides)
-                    elif (question_number == 4):
-                        prediction_change(prediction, info_file_splitted[1], bowler_wickets)
-                    elif (question_number == 5):
-                        prediction_change(prediction, info_file_splitted[1], team_batting_runs)
-                    elif (question_number == 6):
-                        prediction_change(prediction, info_file_splitted[1], batsmen_2_runs)
-                    elif (question_number == 7):
-                        prediction_change(prediction, info_file_splitted[1], bowler_wickets)
-                    elif (question_number == 8):
-                        conditional_change(prediction, info_file_splitted[1], team_batting_wickets)
-
-            elif type == '5':
-                if (math.floor(team_batting_overs) - bet.over_number) == 5:
-                    pass
-            elif type == 'threshold':
+            try:
+                if (43 < batsmen_1_runs < 47):
+                    batsmen = batsmen_1
+                elif (43 < batsmen_2_runs < 47):
+                    batsmen = batsmen_2
+                else:
+                    batsmen = 'None'
+            except:
                 pass
+            
+            print(math.floor(team_batting_overs) - bet.over_number)
+            print(bet.over_number)
+            print(math.floor(team_batting_overs))
+            if (math.floor(team_batting_overs) - bet.over_number) == 1:
+                Match.query.filter_by(id=bet.id).update(dict(resolved=True))
+                print("working")
+                if (special_questions == 3):
+                    if batsmen == 'batsmen_1':
+                        batsmen_stored = batsmen_1_runs
+                    else:
+                        batsmen_stored = batsmen_2_runs
+                    prediction_change(bet.input, bet.curr_data, batsmen_stored, threshold)
+                if (special_questions == 4):
+                    if batsmen == 'batsmen_1':
+                        batsmen_stored = batsmen_1_runs
+                    else:
+                        batsmen_stored = batsmen_2_runs
+                    prediction_change(bet.input, bet.curr_data, batsmen_stored, threshold)
+                elif (question_number == 0):
+                    print("workingyes")
+                    conditional_change(bet.input, bet.curr_data, batsmen_1_sr)
+                elif (question_number == 1):
+                    print("workingyes")
+                    prediction_change(bet.input, bet.curr_data, batsmen_1_fours, threshold)
+                elif (question_number == 2):
+                    print("workingyes")
+                    prediction_change(bet.input, bet.curr_data, batsmen_1_sixes, threshold)
+                elif (question_number == 3):
+                    print("workingyes")
+                    prediction_change(bet.input, bet.curr_data, bowler_wides, threshold)
+                elif (question_number == 4):
+                    print("workingyes")
+                    prediction_change(bet.input, bet.curr_data, bowler_wickets, threshold)
+                elif (question_number == 5):
+                    print("workingyes")
+                    prediction_change(bet.input, bet.curr_data, bowler_wides, threshold)
+                elif (question_number == 6):
+                    print("workingyes")
+                    prediction_change(bet.input, bet.curr_data, bowler_maidens, threshold)
+                elif (question_number == 7):
+                    print("workingyes")
+                    conditional_change(bet.input, bet.curr_data, bowler_econ)
+            if (math.floor(team_batting_overs) - bet.over_number) == 5:
+                Match.query.filter_by(id=bet.id).update(dict(resolved=True))
+                if (question_number == 8):
+                    prediction_change(bet.input, bet.curr_data, team_batting_runs, threshold)
+                elif (question_number == 9):
+                    prediction_change(bet.input, bet.curr_data, batsmen_2_runs, threshold)
+                elif (question_number == 10):
+                    prediction_change(bet.input, bet.curr_data, bowler_wickets, threshold)
+                elif (question_number == 11):
+                    prediction_change(bet.input, bet.curr_data, team_batting_wickets, threshold)
+            if (special_questions == 1):
+                prediction_change(bet.input, bet.curr_data, team_batting_runs, threshold)
+                Match.query.filter_by(id=bet.id).update(dict(resolved=True))
+            elif (special_questions == 2):
+                prediction_change(bet.input, bet.curr_data, team_batting_runs, threshold)
+
+        
+    return render_template('scorecard.html')
+  
