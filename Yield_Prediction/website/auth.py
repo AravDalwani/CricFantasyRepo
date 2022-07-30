@@ -156,31 +156,32 @@ def success():
 
     game_types = list(range(0, len(information['typeMatches'])))
 
-    try:
-        for game_type in game_types:
+    for game_type in game_types:
 
-            data = information['typeMatches'][game_type]['seriesMatches'] 
+        data = information['typeMatches'][game_type]['seriesMatches'] 
 
-            series_list = [] #Different ongoing Series
-            match_details = [] #Different ongoing Matches
+        series_list = [] #Different ongoing Series
+        match_details = [] #Different ongoing Matches
 
-            for series_current in data:
+        for series_current in data:
 
-                #Some Necessary Data Formatting and Series Finding
-                try:
-                    curr_series_data = series_current['seriesAdWrapper']
-                except:
-                    pass
+            #Some Necessary Data Formatting and Series Finding
+            try:
+                curr_series_data = series_current['seriesAdWrapper']
+            except:
+                pass
 
-                try:
-                    series_list.append([curr_series_data['seriesName'], curr_series_data['seriesId']])
-                    storage = curr_series_data['seriesName']
-                    curr_series_data = curr_series_data['matches']
-                except:
-                    pass
-                
+            try:
+                series_list.append([curr_series_data['seriesName'], curr_series_data['seriesId']])
+                storage = curr_series_data['seriesName']
+                curr_series_data = curr_series_data['matches']
+            except:
+                pass
+
+            try:
                 for matchSet in curr_series_data:
-                    if (matchSet['matchInfo']['matchFormat'] == 'T20') and (matchSet['matchInfo']['state'] != 'Complete'):
+                    print(matchSet)
+                    if (matchSet['matchInfo']['matchFormat'] == 'T20') and (matchSet['matchInfo']['state'] == 'In Progress'):
                         seriesName_upcoming_new.append(storage)
                         match_status_new.append('Live')
                         match_details_fire = matchSet['matchInfo']['team1']['teamName'] + str(" ") + str("vs") + str(" ") + matchSet['matchInfo']['team2']['teamName']
@@ -201,9 +202,8 @@ def success():
 
                         team_1_data.append([matchSet['matchInfo']['team1']['teamName'], a])
                         team_2_data.append([matchSet['matchInfo']['team2']['teamName'], b])
-
-    except:
-        pass
+            except:
+                pass
 
     list_types = ['international', 'league']
 
@@ -602,7 +602,7 @@ def propbetting():
     if request.method == 'POST':
         input_user = request.form.get("Option")
         print(input_user)
-        new_match = Match(matchid=Details, prop=question, input = input_user, resolved = False, player_id = current_user.id, curr_data = values_stored, type = type, threshold = threshold, over_number = over_number)
+        new_match = Match(matchid=Details, prop=question, input = input_user, resolved = 0, player_id = current_user.id, curr_data = values_stored, type = type, threshold = threshold, over_number = over_number)
         db.session.add(new_match)
         db.session.commit()
 
@@ -616,7 +616,8 @@ def propbetting():
 def checkbet():
     bet_total = Match.query.filter_by(player_id = current_user.id).all()
     for bet in bet_total:
-        if bet.resolved == False:
+        print(bet.resolved)
+        if bet.resolved == 0:
 
             headers = {
                 'X-RapidAPI-Key': "6dc8a9fa2dmshd76336d1779068ap174c41jsn3a631cdb3743",
@@ -680,7 +681,7 @@ def checkbet():
                 team_currently_batting = team_2_full
                 team_currently_bowling = team_1_full
             
-            url = "https://cricbuzz-cricket.p.rapidapi.com/mcenter/v1/44156/overs"
+            url = "https://cricbuzz-cricket.p.rapidapi.com/mcenter/v1/" +str(Details) + "/overs"
 
             response_test = requests.request("GET", url, headers=headers)
 
@@ -689,6 +690,8 @@ def checkbet():
             team_currently_batting[0][1]['inngs1']['runs'] = information_match_new['batTeam']['teamScore']
             team_currently_batting[0][1]['inngs1']['overs'] = information_match_new['overs']
             team_currently_batting[0][1]['inngs1']['wickets'] = information_match_new['batTeam']['teamWkts']
+
+            print(team_currently_batting[0][1]['inngs1']['overs'])
 
             team_batting = team_currently_batting[0][0]
             batsmen_1 = 'None'
@@ -781,11 +784,13 @@ def checkbet():
                     batsmen = 'None'
             except:
                 pass
-            
-            if (math.floor(team_batting_overs) - bet.over_number) == 1:
+
+            print(math.floor(team_batting_overs) - bet.over_number)
+            print(math.floor(team_batting_overs))
+            print(bet.over_number)
+            if (math.floor(team_batting_overs) - bet.over_number) >= 1:
                 Match.query.filter_by(id=bet.id).update(dict(resolved=1))
                 db.session.commit()
-                print("working")
                 if (special_questions == 3):
                     if batsmen == 'batsmen_1':
                         batsmen_stored = batsmen_1_runs
@@ -814,7 +819,11 @@ def checkbet():
                     prediction_change(bet.input, bet.curr_data, bowler_maidens, threshold, bet)
                 elif (question_number == 7):
                     conditional_change(bet.input, bet.curr_data, bowler_econ, bet)
-            if (math.floor(team_batting_overs) - bet.over_number) == 5:
+                elif (special_questions == 1):
+                    prediction_change(bet.input, bet.curr_data, team_batting_runs, threshold, bet)
+                elif (special_questions == 2):
+                    prediction_change(bet.input, bet.curr_data, team_batting_runs, threshold, bet)
+            if (math.floor(team_batting_overs) - bet.over_number) >= 5:
                 Match.query.filter_by(id=bet.id).update(dict(resolved=1))
                 db.session.commit()
                 if (question_number == 8):
@@ -825,30 +834,24 @@ def checkbet():
                     prediction_change(bet.input, bet.curr_data, bowler_wickets, threshold, bet)
                 elif (question_number == 11):
                     prediction_change(bet.input, bet.curr_data, team_batting_wickets, threshold, bet)
-            if (special_questions == 1):
-                prediction_change(bet.input, bet.curr_data, team_batting_runs, threshold, bet)
-                Match.query.filter_by(id=bet.id).update(dict(resolved=1))
-            elif (special_questions == 2):
-                prediction_change(bet.input, bet.curr_data, team_batting_runs, threshold, bet)
-                Match.query.filter_by(id=bet.id).update(dict(resolved=1))
             
-    # return render_template('scorecard.html')
     bet_placed_arr = []
     bet_status_arr = []
     bet_details_arr = []
     bet_id_arr = []
     bet_result_arr = []
         
-    bet_total = Match.query.filter_by(player_id = current_user.id).all()
+    bet_total = Match.query.filter_by(player_id = User.id).all()
+
     for bets_all_player in bet_total:
         bet_id_arr.append(bets_all_player.id)
         bet_details_arr.append(bets_all_player.prop)
         bet_placed_arr.append(bets_all_player.input)
         bet_status_arr.append(bets_all_player.resolved)
 
-        if(bets_all_player.resolved == 0):
+        if (bets_all_player.resolved == 0):
             bet_result_arr.append("-")
-        elif(bets_all_player.resolved == 1):
+        elif (bets_all_player.resolved == 1):
             bet_result_arr.append(bets_all_player.result)
 
 
