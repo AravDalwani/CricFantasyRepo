@@ -154,7 +154,8 @@ def success():
     response = requests.request("GET", url, headers=headers)
     information = response.json()
 
-    game_types = [0, 1, 2]
+    game_types = list(range(0, len(information['typeMatches'])))
+
     try:
         for game_type in game_types:
 
@@ -351,6 +352,7 @@ def scorecard():
     global over_number
 
     over_number = math.floor(team_batting_overs)
+    over_number_display = team_batting_overs
 
     try:
         team_batting_wickets = team_batting_stats['wickets']
@@ -370,7 +372,6 @@ def scorecard():
             batsmen_1_fours = int(batter[6])
             batsmen_1_sixes = int(batter[7])
             count_batter += 1
-            batsmen_1_ = True
 
         elif (batter[-1] == 'batting') and (batsmen_2 == 'None') and (count_batter == 1):
             batsmen_2 = str(batter[0])
@@ -380,7 +381,15 @@ def scorecard():
             batsmen_2_fours = int(batter[6])
             batsmen_2_sixes = int(batter[7])
             count_batter += 1
-            batsmen_1_ = True
+
+        if (batter == team_currently_batting[1][-1]) and (batsmen_2 == 'None'):
+            batsmen_2 = 'Out'
+            batsmen_2_runs = 0
+            batsmen_2_balls = 0
+            batsmen_2_sr = 0
+            batsmen_2_fours = 0
+            batsmen_2_sixes = 0
+            count_batter += 1   
 
     for bowler in team_currently_bowling[2]:
 
@@ -394,6 +403,17 @@ def scorecard():
             bowler_no_ball = int(bowler[8])
             bowler_wides = int(bowler[9])
             break
+
+        if (bowler == team_currently_bowling[2][-1]) and (bowler_name == 'None'):
+            bowler_name = 'No Bowler'
+            bowler_overs = 0
+            bowler_runs = 0
+            bowler_wickets = 0
+            bowler_maidens = 0
+            bowler_econ = 0
+            bowler_no_ball = 0
+            bowler_wides = 0
+            break 
             
     try:
         if (43 < batsmen_1_runs < 47):
@@ -538,6 +558,8 @@ def scorecard():
     elif (question_number == 12):
         values_stored = target_runs
         type = '5'
+    
+    total_extras = bowler_no_ball + bowler_wides
 
     return render_template('scorecard.html', batsmen_1 = batsmen_1,
     batsmen_2 = batsmen_2,
@@ -552,8 +574,19 @@ def scorecard():
     batsmen_1_fours = batsmen_1_fours,
     batsmen_2_fours = batsmen_2_fours,
     link = link_current_match,
-    user=current_user)
-    
+    user=current_user,
+    team_batting = team_batting,
+    team_bowling = team_bowling,
+    team_batting_runs = team_batting_runs,
+    team_batting_wickets = team_batting_wickets,
+    over_number_display= over_number_display,
+    bowler_name = bowler_name, 
+    bowler_overs = bowler_overs, 
+    bowler_runs = bowler_runs,
+    bowler_wickets = bowler_wickets,
+    bowler_econ = bowler_econ,
+    total_extras = total_extras)
+
 @auth.route("/contact", methods=['POST', 'GET'])
 def contact():
     form = ContactForm()
@@ -716,7 +749,16 @@ def checkbet():
                     batsmen_2_fours = int(batter[6])
                     batsmen_2_sixes = int(batter[7])
                     count_batter += 1
-
+                
+                if (batter == team_currently_batting[1][-1]) and (batsmen_2 == 'None'):
+                    batsmen_2 = 'Out'
+                    batsmen_2_runs = 0
+                    batsmen_2_balls = 0
+                    batsmen_2_sr = 0
+                    batsmen_2_fours = 0
+                    batsmen_2_sixes = 0
+                    count_batter += 1               
+                
             for bowler in team_currently_bowling[2]:
 
                 if (float(bowler[3]) % 1) != 0:
@@ -740,9 +782,6 @@ def checkbet():
             except:
                 pass
             
-            print(math.floor(team_batting_overs) - bet.over_number)
-            print(bet.over_number)
-            print(math.floor(team_batting_overs))
             if (math.floor(team_batting_overs) - bet.over_number) == 1:
                 Match.query.filter_by(id=bet.id).update(dict(resolved=1))
                 db.session.commit()

@@ -59,11 +59,11 @@
 <div class="wc-table-wrapper">
   <div class="table-section">
     <div>
-      <div class="table-title">India</div>
+      <div class="table-title">{{team_batting}}</div>
       <table class="wc-table">
         <thead>
           <tr class="head">
-            <th colspan="6">336-5</th>
+            <th colspan="6">{{team_batting_runs}}-{{team_batting_wickets}}</th>
           </tr>
         </thead>
         <tbody>
@@ -91,98 +91,17 @@
             <td>{{batsmen_2_sixes}}</td>
             <td>{{batsmen_2_sr}}</td>
           </tr>
-          <!-- <tr>
-            <td>KL Rahul</td>
-            <td>57</td>
-            <td>78</td>
-            <td>113</td>
-            <td>113</td>
-            <td>175</td>
-          </tr> -->
-          <tr class="head">
-            <td colspan="6">Over 50</td>
-          </tr>
-          <tr>
-            <td>Bowler</td>
-            <td>O</td>
-            <td>Extras</td>
-            <td>R</td>
-            <td>W</td>
-            <td>ECO</td>
-          </tr>
-          <tr>
-            <td>Amir</td>
-            <td>26</td>
-            <td>26</td>
-            <td>3-47</td>
-            <td>10</td>
-            <td>5.66</td>
-          </tr>
-          <!-- <tr>
-            <td>Wahab</td>
-            <td>26</td>
-            <td>26</td>
-            <td>1-71</td>
-            <td>10</td>
-            <td>5.66</td>
-          </tr>
-          <tr>
-            <td>Hassan</td>
-            <td>26</td>
-            <td>26</td>
-            <td>1-84</td>
-            <td>9</td>
-            <td>5.66</td> -->
-          </tr>
         </tbody>
       </table>
     </div>
     <div>
-      <div class="table-title">Pakistan</div>
+      <div class="table-title">{{team_bowling}}</div>
       <table class="wc-table">
-        <thead>
           <tr class="head">
-            <th colspan="6">166-6</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>Batsman</td>
-            <td>R</td>
-            <td>B</td>
-            <td>4s</td>
-            <td>6s</td>
-            <td>SR</td>
+            <td colspan="6">Over {{over_number_display}}</td>
           </tr>
           <tr>
-            <td>Rohit</td>
-            <td>140</td>
-            <td>113</td>
-            <td>113</td>
-            <td>113</td>
-            <td>175</td>
-          </tr>
-          <tr>
-            <td>Kohli</td>
-            <td>77</td>
-            <td>65</td>
-            <td>113</td>
-            <td>113</td>
-            <td>175</td>
-          </tr>
-          <!-- <tr>
-            <td>KL Rahul</td>
-            <td>57</td>
-            <td>78</td>
-            <td>113</td>
-            <td>113</td>
-            <td>175</td>
-          </tr> -->
-          <tr class="head">
-            <td colspan="6">Over 35</td>
-          </tr>
-          <tr>
-            <td>Bowler</td>
+            <td>Current Bowler</td>
             <td>O</td>
             <td>Extras</td>
             <td>R</td>
@@ -190,28 +109,12 @@
             <td>ECO</td>
           </tr>
           <tr>
-            <td>Amir</td>
-            <td>26</td>
-            <td>26</td>
-            <td>3-47</td>
-            <td>10</td>
-            <td>5.66</td>
-          </tr>
-          <!-- <tr>
-            <td>Wahab</td>
-            <td>26</td>
-            <td>26</td>
-            <td>1-71</td>
-            <td>10</td>
-            <td>5.66</td>
-          </tr>
-          <tr>
-            <td>Hassan</td>
-            <td>26</td>
-            <td>26</td>
-            <td>1-84</td>
-            <td>9</td>
-            <td>5.66</td> -->
+            <td>{{bowler_name}}</td>
+            <td>{{bowler_overs}}</td>
+            <td>{{total_extras}}</td>
+            <td>{{bowler_runs}}</td>
+            <td>{{bowler_wickets}}</td>
+            <td>{{bowler_econ}}</td>
           </tr>
         </tbody>
       </table>
