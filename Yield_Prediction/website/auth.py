@@ -15,29 +15,33 @@ import math
 def getList(dict):
     return dict.keys()
 
-def conditional_change(prediction, old_score, new_score):
+def conditional_change(prediction, old_score, new_score, bet):
     if new_score >= old_score:
         if prediction == 'Increase':
+            Match.query.filter_by(id=bet.id).update(dict(result=1))
             print(True)
         else:
             print(False)
+            Match.query.filter_by(id=bet.id).update(dict(result=0))
     else:
         if prediction == 'Decrease':
-            print(True)
+            Match.query.filter_by(id=bet.id).update(dict(result=1))
         else:
-            print(False)
+            Match.query.filter_by(id=bet.id).update(dict(result=0))
 
-def prediction_change(prediction, old_value, new_value, threshold_new):
+def prediction_change(prediction, old_value, new_value, threshold_new, bet):
     if (new_value - old_value) >= threshold_new:
         if prediction == 'Increase':
+            Match.query.filter_by(id=bet.id).update(dict(result=1))
             print(True)
         else:
             print(False)
+            Match.query.filter_by(id=bet.id).update(dict(result=0))
     else:
         if prediction == 'Decrease':
-            print(True)
+            Match.query.filter_by(id=bet.id).update(dict(result=1))
         else:
-            print(False)
+            Match.query.filter_by(id=bet.id).update(dict(result=0))
 
 
 auth = Blueprint("auth", __name__)
@@ -748,53 +752,45 @@ def checkbet():
                         batsmen_stored = batsmen_1_runs
                     else:
                         batsmen_stored = batsmen_2_runs
-                    prediction_change(bet.input, bet.curr_data, batsmen_stored, threshold)
+                    prediction_change(bet.input, bet.curr_data, batsmen_stored, threshold, bet)
                 if (special_questions == 4):
                     if batsmen == 'batsmen_1':
                         batsmen_stored = batsmen_1_runs
                     else:
                         batsmen_stored = batsmen_2_runs
-                    prediction_change(bet.input, bet.curr_data, batsmen_stored, threshold)
+                    prediction_change(bet.input, bet.curr_data, batsmen_stored, threshold, bet)
                 elif (question_number == 0):
-                    print("workingyes")
-                    conditional_change(bet.input, bet.curr_data, batsmen_1_sr)
+                    conditional_change(bet.input, bet.curr_data, batsmen_1_sr, bet)
                 elif (question_number == 1):
-                    print("workingyes")
-                    prediction_change(bet.input, bet.curr_data, batsmen_1_fours, threshold)
+                    prediction_change(bet.input, bet.curr_data, batsmen_1_fours, threshold, bet)
                 elif (question_number == 2):
-                    print("workingyes")
-                    prediction_change(bet.input, bet.curr_data, batsmen_1_sixes, threshold)
+                    prediction_change(bet.input, bet.curr_data, batsmen_1_sixes, threshold, bet)
                 elif (question_number == 3):
-                    print("workingyes")
-                    prediction_change(bet.input, bet.curr_data, bowler_wides, threshold)
+                    prediction_change(bet.input, bet.curr_data, bowler_wides, threshold, bet)
                 elif (question_number == 4):
-                    print("workingyes")
-                    prediction_change(bet.input, bet.curr_data, bowler_wickets, threshold)
+                    prediction_change(bet.input, bet.curr_data, bowler_wickets, threshold, bet)
                 elif (question_number == 5):
-                    print("workingyes")
-                    prediction_change(bet.input, bet.curr_data, bowler_wides, threshold)
+                    prediction_change(bet.input, bet.curr_data, bowler_wides, threshold, bet)
                 elif (question_number == 6):
-                    print("workingyes")
-                    prediction_change(bet.input, bet.curr_data, bowler_maidens, threshold)
+                    prediction_change(bet.input, bet.curr_data, bowler_maidens, threshold, bet)
                 elif (question_number == 7):
-                    print("workingyes")
-                    conditional_change(bet.input, bet.curr_data, bowler_econ)
+                    conditional_change(bet.input, bet.curr_data, bowler_econ, bet)
             if (math.floor(team_batting_overs) - bet.over_number) == 5:
                 Match.query.filter_by(id=bet.id).update(dict(resolved=1))
                 db.session.commit()
                 if (question_number == 8):
-                    prediction_change(bet.input, bet.curr_data, team_batting_runs, threshold)
+                    prediction_change(bet.input, bet.curr_data, team_batting_runs, threshold, bet)
                 elif (question_number == 9):
-                    prediction_change(bet.input, bet.curr_data, batsmen_2_runs, threshold)
+                    prediction_change(bet.input, bet.curr_data, batsmen_2_runs, threshold, bet)
                 elif (question_number == 10):
-                    prediction_change(bet.input, bet.curr_data, bowler_wickets, threshold)
+                    prediction_change(bet.input, bet.curr_data, bowler_wickets, threshold, bet)
                 elif (question_number == 11):
-                    prediction_change(bet.input, bet.curr_data, team_batting_wickets, threshold)
+                    prediction_change(bet.input, bet.curr_data, team_batting_wickets, threshold, bet)
             if (special_questions == 1):
-                prediction_change(bet.input, bet.curr_data, team_batting_runs, threshold)
+                prediction_change(bet.input, bet.curr_data, team_batting_runs, threshold, bet)
                 Match.query.filter_by(id=bet.id).update(dict(resolved=1))
             elif (special_questions == 2):
-                prediction_change(bet.input, bet.curr_data, team_batting_runs, threshold)
+                prediction_change(bet.input, bet.curr_data, team_batting_runs, threshold, bet)
                 Match.query.filter_by(id=bet.id).update(dict(resolved=1))
             
     return render_template('scorecard.html')
