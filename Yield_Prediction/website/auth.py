@@ -832,9 +832,7 @@ def checkbet():
                 prediction_change(bet.input, bet.curr_data, team_batting_runs, threshold, bet)
                 Match.query.filter_by(id=bet.id).update(dict(resolved=1))
             
-    return render_template('scorecard.html')
-
-    '''
+    # return render_template('scorecard.html')
     bet_placed_arr = []
     bet_status_arr = []
     bet_details_arr = []
@@ -847,11 +845,15 @@ def checkbet():
         bet_details_arr.append(bets_all_player.prop)
         bet_placed_arr.append(bets_all_player.input)
         bet_status_arr.append(bets_all_player.resolved)
-        if(bet_result_arr.)
+
+        if(bets_all_player.resolved == 0):
+            bet_result_arr.append("-")
+        elif(bets_all_player.resolved == 1):
+            bet_result_arr.append(bets_all_player.result)
 
 
-    return render_template('checkbet.html', question = question, option1 = option1, option2 = option2, user=current_user)
+    return render_template('checkbet.html', bet_id_arr = bet_id_arr, bet_details_arr = bet_details_arr, bet_placed_arr = bet_placed_arr, bet_status_arr = bet_status_arr, bet_result_arr = bet_result_arr,  len = len(bet_details_arr))
 
-        '''
+
 
   
