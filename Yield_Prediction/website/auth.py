@@ -16,7 +16,7 @@ def getList(dict):
     return dict.keys()
 
 def conditional_change(prediction, old_score, new_score):
-    if new_score > old_score:
+    if new_score >= old_score:
         if prediction == 'Increase':
             print(True)
         else:
@@ -30,14 +30,14 @@ def conditional_change(prediction, old_score, new_score):
 def prediction_change(prediction, old_value, new_value, threshold_new):
     if (new_value - old_value) >= threshold_new:
         if prediction == 'Increase':
-            return True
+            print(True)
         else:
-            return False    
+            print(False)
     else:
         if prediction == 'Decrease':
-            return True
+            print(True)
         else:
-            return False
+            print(False)
 
 
 auth = Blueprint("auth", __name__)
@@ -220,7 +220,7 @@ def success():
                     match_details_fire = curr_match_name['team1']['teamName'] + str(" ") + str("vs") + str(" ") + curr_match_name['team2']['teamName']
                     match_details_arr_new.append(match_details_fire)
                     match_ID_new.append(str(""))
-    
+
     global Details
     global required_1
     global required_2
@@ -424,7 +424,7 @@ def scorecard():
     questions_general_overs = ['How many runs will team {} make in the next 5 overs?'.format(team_batting), 'How many fours will batsman {} hit in the next 5 overs'.format(batsmen_2), 'How many wickets will {} take in the next five overs'.format(bowler_name), 'Will team {} lose its {} wicket in the next five overs'.format(team_batting, wicket_number), 'Will team {} cross {} in the next 5 overs'.format(team_batting, target_runs)]
 
     special_questions = ['Will team {} cross 50 runs in the next over?'.format(team_batting), 'Will team {} cross 100 runs in the next over?'.format(team_batting), 'Will {} score a half century in the next over?'.format(batsmen), 'Will {} score a century in the next over?'.format(batsmen), 'How many runs will the next partnership between batsman {} and {} be?'.format(batsmen_1, batsmen_2)]
-    
+
     global question
 
     if team_batting_overs < 15:
@@ -564,6 +564,7 @@ def contact():
 def propbetting():
     if request.method == 'POST':
         input_user = request.form.get("Option")
+        print(input_user)
         new_match = Match(matchid=Details, prop=question, input = input_user, resolved = False, player_id = current_user.id, curr_data = values_stored, type = type, threshold = threshold, over_number = over_number)
         db.session.add(new_match)
         db.session.commit()
@@ -579,8 +580,6 @@ def checkbet():
     bet_total = Match.query.filter_by(player_id = current_user.id).all()
     for bet in bet_total:
         if bet.resolved == False:
-
-            print("hello")
 
             headers = {
                 'X-RapidAPI-Key': "6dc8a9fa2dmshd76336d1779068ap174c41jsn3a631cdb3743",
@@ -643,6 +642,16 @@ def checkbet():
             if (len(team_2_full[1]) != 0):
                 team_currently_batting = team_2_full
                 team_currently_bowling = team_1_full
+            
+            url = "https://cricbuzz-cricket.p.rapidapi.com/mcenter/v1/44156/overs"
+
+            response_test = requests.request("GET", url, headers=headers)
+
+            information_match_new = response_test.json()
+
+            team_currently_batting[0][1]['inngs1']['runs'] = information_match_new['batTeam']['teamScore']
+            team_currently_batting[0][1]['inngs1']['overs'] = information_match_new['overs']
+            team_currently_batting[0][1]['inngs1']['wickets'] = information_match_new['batTeam']['teamWkts']
 
             team_batting = team_currently_batting[0][0]
             batsmen_1 = 'None'
@@ -731,7 +740,8 @@ def checkbet():
             print(bet.over_number)
             print(math.floor(team_batting_overs))
             if (math.floor(team_batting_overs) - bet.over_number) == 1:
-                Match.query.filter_by(id=bet.id).update(dict(resolved=True))
+                Match.query.filter_by(id=bet.id).update(dict(resolved=1))
+                db.session.commit()
                 print("working")
                 if (special_questions == 3):
                     if batsmen == 'batsmen_1':
@@ -770,7 +780,8 @@ def checkbet():
                     print("workingyes")
                     conditional_change(bet.input, bet.curr_data, bowler_econ)
             if (math.floor(team_batting_overs) - bet.over_number) == 5:
-                Match.query.filter_by(id=bet.id).update(dict(resolved=True))
+                Match.query.filter_by(id=bet.id).update(dict(resolved=1))
+                db.session.commit()
                 if (question_number == 8):
                     prediction_change(bet.input, bet.curr_data, team_batting_runs, threshold)
                 elif (question_number == 9):
@@ -781,10 +792,31 @@ def checkbet():
                     prediction_change(bet.input, bet.curr_data, team_batting_wickets, threshold)
             if (special_questions == 1):
                 prediction_change(bet.input, bet.curr_data, team_batting_runs, threshold)
-                Match.query.filter_by(id=bet.id).update(dict(resolved=True))
+                Match.query.filter_by(id=bet.id).update(dict(resolved=1))
             elif (special_questions == 2):
                 prediction_change(bet.input, bet.curr_data, team_batting_runs, threshold)
-
-        
+                Match.query.filter_by(id=bet.id).update(dict(resolved=1))
+            
     return render_template('scorecard.html')
+
+    '''
+    bet_placed_arr = []
+    bet_status_arr = []
+    bet_details_arr = []
+    bet_id_arr = []
+    bet_result_arr = []
+        
+    bet_total = Match.query.filter_by(player_id = current_user.id).all()
+    for bets_all_player in bet_total:
+        bet_id_arr.append(bets_all_player.id)
+        bet_details_arr.append(bets_all_player.prop)
+        bet_placed_arr.append(bets_all_player.input)
+        bet_status_arr.append(bets_all_player.resolved)
+        if(bet_result_arr.)
+
+
+    return render_template('checkbet.html', question = question, option1 = option1, option2 = option2, user=current_user)
+
+        '''
+
   

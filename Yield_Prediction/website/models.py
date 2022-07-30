@@ -22,7 +22,7 @@ class Match(db.Model):
     threshold = db.Column(db.Integer)
     resolved = db.Column(db.Boolean)
     over_number = db.Column(db.Integer)
-    #result = db.Column(db.Boolean)
+    result = db.Column(db.Boolean)
 
 
 
