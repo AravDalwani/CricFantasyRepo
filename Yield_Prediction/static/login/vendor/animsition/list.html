@@ -1,0 +1,49 @@
+    <div class="container">
+        <h2 class="fs-2 pb-2">Add A Match</h2>
+        <form action="/app" method="POST">
+            <div class="mb-3">
+                <label for="title" class="form-label">Match Title</label>
+                <input name="title" type="text" class="form-control" id="title" />
+            </div>
+            <div class="mb-3">
+                <label for="desc" class="form-label">Match Format</label>
+                <input name="description" type="text" class="form-control" id="desc" />
+            </div>
+
+            <button type="submit" class="btn btn-primary">Submit</button>
+        </form>
+    </div>
+    <div class="container my-3 pb-5">
+        <h2 class="fs-2 pb-2">Ongoing Matches</h2>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Match Title</th>
+                    <th scope="col">Match Format</th>
+                    <th scope="col">Starting Time</th>
+                    <th scope="col">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% if user.tasks|length == 0 %}
+                <div class="alert alert-primary" role="alert">
+                    No Match Found. Add your first Match Now!
+                </div>
+                {% else %}
+                {% for task in user.tasks %}
+                <tr>
+                    <th scope="row">{{loop.index}}</th>
+                    <td>{{task.title}}</td>
+                    <td>{{task.description}}</td>
+                    <td>{{task.date_created}}</td>
+                    <td>
+                        <a href="/update/{{task.serial}}" type="button" class="btn btn-outline-success">Scorecard</a>
+                        <a href="/delete/{{task.serial}}" type="button" class="btn btn-outline-danger">Props</a>
+                    </td>
+                </tr>
+                {% endfor %}
+                {% endif %}
+            </tbody>
+        </table>
+    </div>

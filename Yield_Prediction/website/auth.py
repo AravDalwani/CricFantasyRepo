@@ -614,9 +614,8 @@ def propbetting():
 @login_required
 @auth.route('/checkbet', methods=['POST', 'GET'])
 def checkbet():
-    bet_total = Match.query.filter_by(player_id = current_user.id).all()
+    bet_total = Match.query.filter_by(player_id = current_user.id)
     for bet in bet_total:
-        print(bet.resolved)
         if bet.resolved == 0:
 
             headers = {
@@ -785,9 +784,6 @@ def checkbet():
             except:
                 pass
 
-            print(math.floor(team_batting_overs) - bet.over_number)
-            print(math.floor(team_batting_overs))
-            print(bet.over_number)
             if (math.floor(team_batting_overs) - bet.over_number) >= 1:
                 Match.query.filter_by(id=bet.id).update(dict(resolved=1))
                 db.session.commit()
@@ -841,7 +837,7 @@ def checkbet():
     bet_id_arr = []
     bet_result_arr = []
         
-    bet_total = Match.query.filter_by(player_id = User.id).all()
+    bet_total = Match.query.filter_by(player_id = current_user.id).all()
 
     for bets_all_player in bet_total:
         bet_id_arr.append(bets_all_player.id)
